@@ -131,3 +131,85 @@ class UserMetaStorage:
             self.__storage.update_one_doc(self.__users_collection, self.__id_column, user_id, upd_dict)
         except:
             raise UserMetaError("Failed to update user")
+
+    def get_username(self, user_id: int) -> str:
+        '''
+        Gives user's username
+
+        Parameters
+        ----------
+        user_id : int
+            User's id from the storage
+        Returns
+        -------
+        str
+            username
+        '''
+        try:
+            user_id = int(user_id)
+
+            usernames_found = self.__storage.get_data_by_column(self.__users_collection,
+                                                            by=self.__id_column,
+                                                            value=user_id,
+                                                            columns=[self.__username_column])
+
+            username = usernames_found[0]
+            username = username[self.__username_column]
+            return username
+        except:
+            raise UserMetaError("User was not found!")
+
+    def get_first_name(self, user_id: int) -> str:
+        '''
+        Gives user's first name
+
+        Parameters
+        ----------
+        user_id : int
+            User's id from the storage
+        Returns
+        -------
+        str
+            first name
+        '''
+        try:
+            user_id = int(user_id)
+
+            first_name_found = self.__storage.get_data_by_column(self.__users_collection,
+                                                                by=self.__id_column,
+                                                                value=user_id,
+                                                                columns=[self.__first_name_column])
+
+            first_name = first_name_found[0]
+            first_name = first_name[self.__first_name_column]
+            return first_name
+        except:
+            raise UserMetaError("User was not found!")
+
+    def get_last_name(self, user_id: int) -> str:
+        '''
+        Gives user's last name
+
+        Parameters
+        ----------
+        user_id : int
+            User's id from the storage
+        Returns
+        -------
+        str
+            last name
+        '''
+        try:
+            user_id = int(user_id)
+
+            last_name_found = self.__storage.get_data_by_column(self.__users_collection,
+                                                                by=self.__id_column,
+                                                                value=user_id,
+                                                                columns=[self.__last_name_column])
+
+            last_name = last_name_found[0]
+            last_name = last_name[self.__last_name_column]
+            return last_name
+        except:
+            raise UserMetaError("User was not found!")
+
