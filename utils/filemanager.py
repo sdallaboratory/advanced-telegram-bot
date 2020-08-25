@@ -4,7 +4,7 @@ from typing import List, Union
 
 class FileManager:
     """
-    Static auxilary class to simplify data processing
+    Static auxiliary  class to simplify data processing
 
     ...
     Methods
