@@ -1,0 +1,24 @@
+# environment
+*venv*
+*.env
+
+# python
+*__pycache__*
+
+# VisualStudioCode #
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+settings.json
+
+# VisualStudioCode Patch #
+.history
+
+#test
+test.py
+
+# produced files
+product
