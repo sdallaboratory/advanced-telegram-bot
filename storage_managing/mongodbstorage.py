@@ -1,7 +1,7 @@
 from storage_managing.storage import Storage, StorageException
 from utils.datafiltering import DataFiltering
 
-import dotenv, os
+import os
 from pymongo import MongoClient
 
 
