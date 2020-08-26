@@ -1,11 +1,13 @@
 from typing import Union
 from datetime import datetime
 
+
 class DataFiltering:
     '''
     Simple auxiliary filtering class
     '''
-    def dict_list_slice(self, dicts: list, columns: list) -> list:
+    @staticmethod
+    def dict_list_slice(dicts: list, columns: list) -> list:
         '''
         Slices list of dicts by given columns(keys)
 

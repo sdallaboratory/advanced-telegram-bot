@@ -1,4 +1,5 @@
-from src.lib.exceptions.telegramboterror import TelegramBotError
+from exceptions.telegramboterror import TelegramBotError
+
 
 class UserMetaError(TelegramBotError):
     '''

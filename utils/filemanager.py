@@ -2,6 +2,7 @@ import json
 import os
 from typing import List, Union
 
+
 class FileManager:
     """
     Static auxiliary  class to simplify data processing
