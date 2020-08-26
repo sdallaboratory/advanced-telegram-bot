@@ -45,8 +45,6 @@ class RoleAuth:
         self.__storage = storage
         self.__roles = roles
 
-        print("Role manager was successfully initialized!")
-
     def __role_check(self, role: str) -> None:
         '''
         Checks if role exists
@@ -64,7 +62,6 @@ class RoleAuth:
             raise RoleError("Role is not found!")
 
     def __password_check(self, role: str, password: str) -> None:
-        print(self.__roles)
         if self.__roles[role]['password'] != password:
             raise PasswordError("Wrong password!")
 
@@ -93,8 +90,6 @@ class RoleAuth:
         self.__roles[role] = {}
         self.__roles[role]['password'] = password
 
-        print(f'Role "{role}"" was successfully added!')
-
     def remove_role(self, role: str, password: str = "") -> None:
         '''
         Removes specified role from the roles list
@@ -110,8 +105,6 @@ class RoleAuth:
         self.__password_check(role, password)
 
         self.__roles.pop(role)
-
-        print(f'Role "{role}"" was successfully removed!')
 
     def rename_role(self, role: str) -> None:
         pass
@@ -200,7 +193,6 @@ class RoleAuth:
                                         id=user_id,
                                         doc=roles_dict)
 
-            print(f'User {user_id} successfully logged in as a(n) {role}!')
         else:
             raise AlreadyLoggedError(f'User has already logged in as a(n) {role}!')
 
@@ -235,6 +227,5 @@ class RoleAuth:
                                         id=user_id,
                                         doc=roles_dict)
 
-            print(f'User {user_id} successfully logged out!')
         else:
             raise AlreadyLoggedError(f'User has already logged out as a(n) {role}!')

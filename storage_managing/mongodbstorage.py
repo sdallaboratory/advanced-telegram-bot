@@ -76,7 +76,6 @@ class MongoDBStorage(Storage):
                                         username=username,
                                         password=password)
 
-            print('Succesfully connected to mongo!')
         except:
             raise StorageException('Failed to connect to mongo!')
 
@@ -158,11 +157,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].insert_one(doc)
-
-            if res.inserted_id:
-                print(f'Succesfully inserted a doc to {collection}!')
-            else:
-                print('0 doc were inserted to the collection')
         except:
             raise StorageException('Failed to insert a doc to collection')
 
@@ -179,11 +173,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].insert_many(docs)
-
-            if len(res.inserted_ids):
-                print(f'Succesfully inserted {len(res.inserted_ids)} docs to {collection}!')
-            else:
-                print('0 doc were inserted to the collection')
         except:
             raise StorageException('Failed to insert docs to collection!')
 
@@ -206,11 +195,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].delete_one({column: value})
-
-            if res.deleted_count:
-                print(f'Succesfully removed {value} from {collection}!')
-            else:
-                print('0 docs were removed from collection!')
         except:
             raise StorageException('Failed to remove a doc from collection!')
 
@@ -227,11 +211,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].delete_one(doc)
-
-            if res.deleted_count:
-                print(f'Succesfully removed a doc from {collection}!')
-            else:
-                print('0 docs were removed from collection!')
         except:
             raise StorageException('Failed to remove a doc from collection!')
 
@@ -250,11 +229,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].delete_many({column: value})
-
-            if res.deleted_count:
-                print(f'Succesfully removed {res.deleted_count} docs with {column}:{value} from {collection}!')
-            else:
-                print('0 docs were removed from collection!')
         except:
             raise StorageException('Failed to remove a doc from collection!')
 
@@ -271,10 +245,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].delete_many(doc)
-            if res.deleted_count:
-                print(f'Succesfully removed {res.deleted_count} docs with {doc} from {collection}!')
-            else:
-                print('0 docs were removed from collection!')
         except:
             raise StorageException('Failed to remove a doc from collection!')
 
@@ -299,11 +269,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].update_one({id_column: id}, {'$set': doc}, upsert=True)
-
-            if res.matched_count:
-                print(f'Succesfully updated a doc from {collection}!')
-            else:
-                print('0 docs were updated')
         except:
             raise StorageException('Failed to update a doc from collection!')
 
@@ -324,9 +289,6 @@ class MongoDBStorage(Storage):
         '''
         try:
             res = self.__database[collection].update_many({id_column: id}, {'$set': doc}, upsert=True)
-
-            if res.matched_count:
-                print(f'Succesfully updated docs from {collection}!')
         except:
             raise StorageException('Failed to update a doc from collection!')
 

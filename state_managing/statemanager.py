@@ -40,8 +40,6 @@ class StateManager:
         self.__storage = storage
         self.__with_params = with_params
 
-    print("Status manager was successfully initialized!")
-
     def get_state(self, user_id: int) -> Union[str, dict]:
         '''
         Gives a state of specified user
@@ -133,7 +131,6 @@ class StateManager:
                                         id=user_id,
                                         doc=status_doc)
 
-            print(f'User {user_id}\'s status was set to "{status}"')
         except:
             raise StateError(f'Failed to change {user_id}\'s state to {status}')
 

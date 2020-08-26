@@ -101,8 +101,6 @@ class UserMetaStorage:
 
             self.__storage.insert_one_doc(self.__users_collection, init_dict)
 
-            print(f'User {user_id} was initialized!')
-
     def user_update(self, user_id: int, username: str = "", first_name: str = "", last_name: str = ""):
         '''
         Method for updating user's data in the storage.
