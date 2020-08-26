@@ -33,14 +33,24 @@ class LocalJSONStorage(Storage):
             if columns:
                 data = DataFiltering.dict_list_slice(dicts=data,
                                                     columns=columns)
-            
+            if count:
+                data = data[:count]
+
             return data
         except:
             raise StorageException("Failed to get data from storage")
 
     def get_data_by_column(self, collection: str, by: str, value: str, columns: list = [], count: int = 0) -> list:
-        pass
-    
+        column_dict = {
+            by: value
+        }
+
+        find_res = self.get_data(collection=collection,
+                                columns=columns,
+                                doc=column_dict,
+                                count=count)
+
+        return find_res
     #---------------------------------------------------------------------------
     # Insertion methods
     #---------------------------------------------------------------------------
