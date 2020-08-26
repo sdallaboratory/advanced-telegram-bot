@@ -69,7 +69,6 @@ class MongoDBStorage(Storage):
                                     username=username,
                                     password=password)
         self.__database = self.__client[database]
-        self.datafiltering = DataFiltering()
 
     def __init_mongo_connection(self, address: int, port: int, username: str, password: str) -> None:
         try:
@@ -105,7 +104,7 @@ class MongoDBStorage(Storage):
             else:
                 db_data = list(db_collection.find(doc))
 
-            db_data_filtered = self.datafiltering.dict_list_slice(dicts=db_data,
+            db_data_filtered = DataFiltering.dict_list_slice(dicts=db_data,
                                                                 columns=columns)
 
             return db_data_filtered
@@ -135,7 +134,7 @@ class MongoDBStorage(Storage):
             else:
                 db_data = list(db_collection.find({by: value}).limit(count))
 
-            db_data_filtered = self.datafiltering.dict_list_slice(dicts=db_data,
+            db_data_filtered = DataFiltering.dict_list_slice(dicts=db_data,
                                                                 columns=columns)
 
             return db_data_filtered

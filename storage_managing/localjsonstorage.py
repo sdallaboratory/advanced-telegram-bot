@@ -24,6 +24,15 @@ class LocalJSONStorage(Storage):
         try:
             with open(self.__folder + collection + '.json', 'r') as data_file:
                 data = json.load(data_file)
+                data_file.close()
+            
+            if doc:
+                data = filter(lambda x: doc.items() <= x.items(), data)
+                data = list(data)
+                
+            if columns:
+                data = DataFiltering.dict_list_slice(dicts=data,
+                                                    columns=columns)
             
             return data
         except:
