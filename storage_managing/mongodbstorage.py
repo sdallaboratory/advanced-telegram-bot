@@ -109,7 +109,7 @@ class MongoDBStorage(Storage):
 
             return db_data_filtered
         except:
-            raise StorageException('Failed to get data from db')
+            raise StorageException('Failed to get data from storage')
 
     def get_data_by_column(self, collection: str, by: str, value: str, columns: list = [], count: int = 0) -> list:
         '''
@@ -139,7 +139,7 @@ class MongoDBStorage(Storage):
 
             return db_data_filtered
         except:
-            raise StorageException('Failed to get data from db')
+            raise StorageException('Failed to get data from storage')
 
     #---------------------------------------------------------------------------
     # Insertion methods

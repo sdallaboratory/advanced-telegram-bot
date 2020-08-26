@@ -51,15 +51,42 @@ class LocalJSONStorage(Storage):
                                 count=count)
 
         return find_res
+
     #---------------------------------------------------------------------------
     # Insertion methods
     #---------------------------------------------------------------------------
     
     def insert_one_doc(self, collection: str, doc: dict) -> None:
-        pass
+        try:
+            try:
+                data = self.get_data(collection=collection)
+            except:
+                data = []
+            
+            data.append(doc)
+
+            with open(self.__folder + collection + '.json', 'w') as data_file:
+                json.dump(data, data_file)
+                data_file.close()
+
+        except:
+            raise StorageException('Failed to insert a doc to collection')
 
     def insert_many_docs(self, collection: str, docs: list) -> None:
-        pass
+        try:
+            try:
+                data = self.get_data(collection=collection)
+            except:
+                data = []
+            
+            data += docs
+
+            with open(self.__folder + collection + '.json', 'w') as data_file:
+                json.dump(data, data_file)
+                data_file.close()
+
+        except:
+            raise StorageException('Failed to insert a doc to collection')
 
     #---------------------------------------------------------------------------
     # Removal methods
