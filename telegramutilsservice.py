@@ -6,6 +6,7 @@ from storage_managing.localjsonstorage import LocalJSONStorage
 from locales.localemanager import LocaleManager
 from logs.botlogger import BotLogger
 
+
 class InitException(Exception):
     '''
     TelegramUtilsService constructor's exception class
