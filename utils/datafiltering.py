@@ -1,6 +1,7 @@
 from typing import Union
 from datetime import datetime
 
+
 class DataFiltering:
     '''
     Simple auxiliary filtering class

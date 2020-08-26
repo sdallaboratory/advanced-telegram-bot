@@ -1,13 +1,17 @@
-from .exceptions.storageexception import StorageException
+from storage_managing.exceptions.storageexception import StorageException
 
-class Storage:
+from abc import ABC, abstractmethod
+
+
+class Storage(ABC):
     '''
     Base class for storing data
     '''
-    #--------------p-------------------------------------------------------------
+    #---------------------------------------------------------------------------
     # Getting methods
     #---------------------------------------------------------------------------
-
+    
+    @abstractmethod 
     def get_data(self, collection: str, columns: list = [], doc: dict = {}, count: int = 0) -> list:
         '''
         Getting list of documents from the certain collection
@@ -21,6 +25,7 @@ class Storage:
         '''
         pass
 
+    @abstractmethod 
     def get_data_by_column(self, collection: str, by: str, value: str, columns: list = [], count: int = 0) -> list:
         '''
         Getting list of documents from the certain collection by requested column: value
@@ -41,7 +46,8 @@ class Storage:
     #---------------------------------------------------------------------------
     # Insertion methods
     #---------------------------------------------------------------------------
-
+    
+    @abstractmethod 
     def insert_one_doc(self, collection: str, doc: dict) -> None:
         '''
         Inserts document to the collection
@@ -54,7 +60,8 @@ class Storage:
             document to insert to the storage
         '''
         pass
-
+    
+    @abstractmethod 
     def insert_many_docs(self, collection: str, docs: list) -> None:
         '''
         Inserts list of documents to the collection
@@ -71,7 +78,8 @@ class Storage:
     #---------------------------------------------------------------------------
     # Removal methods
     #---------------------------------------------------------------------------
-
+    
+    @abstractmethod 
     def remove_one_doc_by_column(self, collection: str, column: str, value: str) -> None:
         '''
         Removes first found document with specified value from the specified column
@@ -86,7 +94,8 @@ class Storage:
             value from the column
         '''
         pass
-    
+        
+    @abstractmethod 
     def remove_one_doc_by_dict(self, collection: str, doc: dict) -> None:
         '''
         Removes first found document containg values from specified dictionary
@@ -99,7 +108,8 @@ class Storage:
             "collection_column_name - value" dictionary
         '''
         pass
-
+    
+    @abstractmethod 
     def remove_many_docs_by_column(self, collection: str, column: str, value: str):
         '''
         Removes all documents with specified value from the specified column
@@ -114,7 +124,8 @@ class Storage:
             value from the column
         '''
         pass
-        
+            
+    @abstractmethod 
     def remove_many_docs_by_dict(self, collection: str, doc: dict) -> None:
         '''
         Removes all documents containg values from specified dictionary
@@ -131,7 +142,8 @@ class Storage:
     #---------------------------------------------------------------------------
     # Update methods
     #---------------------------------------------------------------------------
-
+    
+    @abstractmethod 
     def update_one_doc(self, collection: str, id_column: str, id: str, doc: dict) -> None:
         '''
         Updates first found doc in certain collection by chosen column by dictionary from args
@@ -148,7 +160,8 @@ class Storage:
             dictionay with values to update for the found doc by id
         '''
         pass
-
+    
+    @abstractmethod 
     def update_many_docs(self, collection: str, id_column: str, id: str, doc: dict) -> None:
         '''
         Updates all documents in certain collection by chosen column by dictionary from args
