@@ -6,6 +6,10 @@ from storage_managing.localjsonstorage import LocalJSONStorage
 from locales.localemanager import LocaleManager
 from logs.botlogger import BotLogger
 
+class InitException(Exception):
+    '''
+    TelegramUtilsService constructor's exception class
+    '''
 
 class TelegramUtilsService:
     def __init__(self,
@@ -16,7 +20,7 @@ class TelegramUtilsService:
                 state_with_params: bool=False,
                 locales_folder: str="Locales",
                 **storage_data) -> None:
-        if ['db_address', 'port', 'username', 'password', 'database'] == list(storage_data.keys()):
+        if set(['db_address', 'db_port', 'db_username', 'db_password', 'db_name']).issubset(list(storage_data.keys())):
             storage = MongoDBStorage(address=storage_data['db_address'],
                                     port=int(storage_data['db_port']),
                                     username=storage_data['db_username'],
@@ -27,13 +31,14 @@ class TelegramUtilsService:
         else:
             raise InitException('Could not initialize storage class')
 
-        self.role_auth = RoleAuth(storage=storage, roles=roles, users_collection=user_collection_name)
-        self.state_manager = StateManager(storage=storage, users_collection=user_collection_name, with_params=state_with_params)
-        self.user_meta = UserMetaStorage(storage=storage, users_collection=user_collection_name)
-        self.locale_manager = LocaleManager(locales_folder)
-        self.logger = BotLogger(storage=storage, collection_name=logs_collection_name)
-
-class InitException(Exception):
-    '''
-    TelegramUtilsService constructor's exception class
-    '''
+        self.role_auth = RoleAuth(storage=storage,
+                                roles=roles,
+                                users_collection=user_collection_name)
+        self.state_manager = StateManager(storage=storage,
+                                        users_collection=user_collection_name,
+                                        with_params=state_with_params)
+        self.user_meta = UserMetaStorage(storage=storage,
+                                        users_collection=user_collection_name)
+        self.locale_manager = LocaleManager(locales_folder=locales_folder)
+        self.logger = BotLogger(storage=storage,
+                                collection_name=logs_collection_name)

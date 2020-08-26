@@ -52,8 +52,12 @@ class MongoDBStorage(Storage):
     update_many_docs(collection, id_column, id, doc)
         Updates all documents in certain collection by chosen column by dictionary from args
     '''
-    def __init__(self, address: str = "localhost", port: int = 27017,
-                username: str = "", password: str = "", database: str = "config"):
+    def __init__(self,
+                address: str = "localhost",
+                port: int = 27017,
+                username: str = "",
+                password: str = "",
+                database: str = "config"):
         '''
         Keyword arguments:
         ---
