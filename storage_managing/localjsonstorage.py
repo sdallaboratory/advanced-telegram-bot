@@ -291,8 +291,8 @@ class LocalJSONStorage(Storage):
             for index,_ in enumerate(data):
                 try:
                     if data[index][id_column] == id:
-                        data[index] = doc
-                        data[index][id_column] = id
+                        for key in doc.keys():
+                            data[index][key] = doc[key]
                         count += 1
                         break
                 except:
@@ -326,8 +326,8 @@ class LocalJSONStorage(Storage):
             for index,_ in enumerate(data):
                 try:
                     if data[index][id_column] == id:
-                        data[index] = doc
-                        data[index][id_column] = id
+                        for key in doc.keys():
+                            data[index][key] = doc[key]
                         count += 1
                 except:
                     continue
