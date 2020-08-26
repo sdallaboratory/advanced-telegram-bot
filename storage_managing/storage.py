@@ -10,12 +10,12 @@ class Storage(ABC):
     #---------------------------------------------------------------------------
     # Getting methods
     #---------------------------------------------------------------------------
-    
-    @abstractmethod 
+
+    @abstractmethod
     def get_data(self, collection: str, columns: list = [], doc: dict = {}, count: int = 0) -> list:
         '''
         Getting list of documents from the certain collection
-        
+
         Keyword arguments:
         ---
         collection : str, required
@@ -25,11 +25,11 @@ class Storage(ABC):
         '''
         pass
 
-    @abstractmethod 
+    @abstractmethod
     def get_data_by_column(self, collection: str, by: str, value: str, columns: list = [], count: int = 0) -> list:
         '''
         Getting list of documents from the certain collection by requested column: value
-        
+
         Keyword arguments:
         ---
         collection : str, required
@@ -46,8 +46,8 @@ class Storage(ABC):
     #---------------------------------------------------------------------------
     # Insertion methods
     #---------------------------------------------------------------------------
-    
-    @abstractmethod 
+
+    @abstractmethod
     def insert_one_doc(self, collection: str, doc: dict) -> None:
         '''
         Inserts document to the collection
@@ -60,8 +60,8 @@ class Storage(ABC):
             document to insert to the storage
         '''
         pass
-    
-    @abstractmethod 
+
+    @abstractmethod
     def insert_many_docs(self, collection: str, docs: list) -> None:
         '''
         Inserts list of documents to the collection
@@ -78,12 +78,12 @@ class Storage(ABC):
     #---------------------------------------------------------------------------
     # Removal methods
     #---------------------------------------------------------------------------
-    
-    @abstractmethod 
+
+    @abstractmethod
     def remove_one_doc_by_column(self, collection: str, column: str, value: str) -> None:
         '''
         Removes first found document with specified value from the specified column
-        
+
         Keyword arguments:
         ---
         collection : str, required
@@ -94,8 +94,8 @@ class Storage(ABC):
             value from the column
         '''
         pass
-        
-    @abstractmethod 
+
+    @abstractmethod
     def remove_one_doc_by_dict(self, collection: str, doc: dict) -> None:
         '''
         Removes first found document containg values from specified dictionary
@@ -108,12 +108,12 @@ class Storage(ABC):
             "collection_column_name - value" dictionary
         '''
         pass
-    
-    @abstractmethod 
+
+    @abstractmethod
     def remove_many_docs_by_column(self, collection: str, column: str, value: str):
         '''
         Removes all documents with specified value from the specified column
-        
+
         Keyword arguments:
         ---
         collection : str, required
@@ -124,8 +124,8 @@ class Storage(ABC):
             value from the column
         '''
         pass
-            
-    @abstractmethod 
+
+    @abstractmethod
     def remove_many_docs_by_dict(self, collection: str, doc: dict) -> None:
         '''
         Removes all documents containg values from specified dictionary
@@ -142,8 +142,8 @@ class Storage(ABC):
     #---------------------------------------------------------------------------
     # Update methods
     #---------------------------------------------------------------------------
-    
-    @abstractmethod 
+
+    @abstractmethod
     def update_one_doc(self, collection: str, id_column: str, id: str, doc: dict) -> None:
         '''
         Updates first found doc in certain collection by chosen column by dictionary from args
@@ -160,8 +160,8 @@ class Storage(ABC):
             dictionay with values to update for the found doc by id
         '''
         pass
-    
-    @abstractmethod 
+
+    @abstractmethod
     def update_many_docs(self, collection: str, id_column: str, id: str, doc: dict) -> None:
         '''
         Updates all documents in certain collection by chosen column by dictionary from args
@@ -178,4 +178,3 @@ class Storage(ABC):
             dictionay with values to update for every found document by id
         '''
         pass
-            

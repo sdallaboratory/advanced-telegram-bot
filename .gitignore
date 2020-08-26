@@ -1,6 +1,7 @@
 # environment
 *venv*
 *.env
+env
 
 # python
 *__pycache__*
