@@ -150,8 +150,26 @@ class LocalJSONStorage(Storage):
     #---------------------------------------------------------------------------
 
     def update_one_doc(self, collection: str, id_column: str, id: str, doc: dict) -> None:
-        pass
+        try:
+            count = 0
+            data = self.get_data(collection=collection)
+            for index,_ in enumerate(data):
+                try:
+                    if data[index][id_column] == id:
+                        data[index] = doc
+                        data[index][id_column] = id
+                        count += 1
+                        break
+                except:
+                    continue
+            if count > 0:
+                self.__write_data_to_json(self.__folder + collection + '.json', data)
+                
+        except:
+            raise StorageException('Failed to update a doc from collection!')
 
     def update_many_docs(self, collection: str, id_column: str, id: str, doc: dict) -> None:
-        pass
-
+        try:    
+            raise StorageException('Failed to update a doc from collection!')
+        except:
+            raise StorageException('Failed to update a doc from collection!')
