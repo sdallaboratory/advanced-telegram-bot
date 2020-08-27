@@ -3,7 +3,6 @@ from typing import Any
 from utils.filemanager import FileManager
 
 
-
 class LocaleManager:
     """
     Class for locale-dependent content loading and managing
