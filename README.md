@@ -10,10 +10,12 @@ Python library containing utils for telegram bots
 
 ### Usage
 Just import the class and you're good to go
-`from telegramutilsservice import TelegramUtilsService`
+```
+from telegramutilsservice import TelegramUtilsService
+```
 
 ### Ways of storing your data
-###### MongoDB
+##### MongoDB
 To use mongo as a storage you have to provide its data for authorization to the class like so:
 ```
 TelegramUtilsService(
@@ -31,7 +33,7 @@ TelegramUtilsService(
 ```
 Also you should create collections in mongo by youserlf, according to col. names you provide in constructor
 
-###### Local Storage (JSONs)
+##### Local Storage (JSONs)
 To use local storage based on jsons  you have to provide the folder path to the class like so:
 ```
 TelegramUtilsService(
