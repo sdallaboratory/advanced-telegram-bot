@@ -2,7 +2,9 @@
 Python library containing utils for telegram bots
 
 ### Authors
+made by [SDAL](https://sdal.pw/ "sdal"): 
 [minish144](https://github.com/Minish144 "minish144")
+& 
 [usual-one](https://github.com/usual-one "usual-one")
 
 ### Available utils
