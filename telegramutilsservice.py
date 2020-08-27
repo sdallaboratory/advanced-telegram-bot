@@ -36,7 +36,7 @@ class TelegramUtilsService:
     states : list
         The list of status' titles. For example:
         ["free", "busy", "entering password"]
-    user_collection_name : str, optional
+    users_collection_name : str, optional
         Name of collection with users. That's a name of json file with data,
         in case you choose json data storage,
         else it's mongo's collection name, by default "Users"
@@ -59,7 +59,7 @@ class TelegramUtilsService:
     def __init__(self,
                 roles: dict,
                 states: list,
-                user_collection_name: str="Users",
+                users_collection_name: str="Users",
                 logs_collection_name: str="Logs",
                 state_with_params: bool=False,
                 locales_folder: str="Locales",
@@ -79,7 +79,7 @@ class TelegramUtilsService:
         states : list
             The list of status' titles. For example:
             ["free", "busy", "entering password"]
-        user_collection_name : str, optional
+        users_collection_name : str, optional
             Name of collection with users. That's a name of json file with data,
             in case you choose json data storage,
             else it's mongo's collection name, by default "Users"
@@ -117,19 +117,19 @@ class TelegramUtilsService:
         else:
             raise InitException('Could not initialize storage class')
 
-        params_list = [roles, states, user_collection_name, logs_collection_name]
+        params_list = [roles, states, users_collection_name, logs_collection_name]
         for param in params_list:
              if not param:
                  raise InitException(f'{param} cannot be empty!')
 
         self.role_auth = RoleAuth(storage=storage,
                                 roles=roles,
-                                users_collection=user_collection_name)
+                                users_collection=users_collection_name)
         self.state_manager = StateManager(storage=storage,
-                                        users_collection=user_collection_name,
+                                        users_collection=users_collection_name,
                                         with_params=state_with_params)
         self.user_meta = UserMetaStorage(storage=storage,
-                                        users_collection=user_collection_name)
+                                        users_collection=users_collection_name)
         self.locale_manager = LocaleManager(locales_folder=locales_folder)
         self.logger = BotLogger(storage=storage,
                                 collection_name=logs_collection_name)
