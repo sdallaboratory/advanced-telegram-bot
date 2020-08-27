@@ -8,6 +8,11 @@ Python library containing utils for telegram bots
 - State system
 - User meta data storage
 
+### Dependencies
+```
+pymongo >= 3.0
+```
+
 ### Usage
 Just import the class and you're good to go
 ```
