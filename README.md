@@ -1,6 +1,10 @@
 # Advanced Telegram Bot
 Python library containing utils for telegram bots
 
+### Authors
+[minish144](https://github.com/Minish144 "minish144")
+[usual-one](https://github.com/usual-one "usual-one")
+
 ### Available utils
 - Locale-dependent data storage
 - Logger
@@ -11,6 +15,11 @@ Python library containing utils for telegram bots
 ### Dependencies
 ```
 pymongo >= 3.0
+```
+
+### Installation
+```
+pip install advanced-telegram-bot
 ```
 
 ### Usage
