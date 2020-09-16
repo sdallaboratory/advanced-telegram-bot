@@ -1,5 +1,10 @@
 # Advanced Telegram Bot
+
 Python library containing utils for telegram bots
+
+[![pypi-version](https://img.shields.io/pypi/v/advanced-telegram-bot?style=flat-square)](https://pypi.org/project/advanced-telegram-bot)
+![python-version](https://img.shields.io/pypi/pyversions/advanced-telegram-bot?style=flat-square)
+![license](https://img.shields.io/pypi/l/advanced-telegram-bot?style=flat-square)
 
 ### Authors
 made by [SDAL](https://sdal.pw/ "sdal"): 
