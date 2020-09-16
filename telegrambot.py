@@ -1,8 +1,12 @@
+import telegram as tg
+import telegram.ext as tg_ext
+
 from components import *
 from .exceptions.initexception import InitException
 
 class TelegramBot:
     def __init__(self,
+                 bot_token: str,
                  roles: dict,
                  states: list,
                  users_collection_name: str="Users",
@@ -37,3 +41,7 @@ class TelegramBot:
         self.locale_manager = LocaleManager(locales_folder=locales_folder)
         self.logger = BotLogger(storage=storage,
                                 collection_name=logs_collection_name)
+
+        self.__updater = tg_ext.Updater(token=bot_token)
+        self.__dispatcher = self.__updater.dispatcher
+        self.__routes = {"commands": [], "messages": []}
