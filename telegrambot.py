@@ -1,3 +1,4 @@
+import re
 from typing import List, Callable
 
 import telegram as tg
@@ -167,7 +168,8 @@ class TelegramBot:
         self.logger = BotLogger(storage=storage,
                                 collection_name=logs_collection_name)
 
-        self.__updater = tg_ext.Updater(token=bot_token)
+        self.__updater = tg_ext.Updater(token=bot_token,
+                                        use_context=True)
         self.__dispatcher = self.__updater.dispatcher
         self.__routes = {"commands": [], "messages": []}
 
@@ -206,7 +208,7 @@ class TelegramBot:
         Arguments
         ---------
         command: str, required
-            command to register
+            command to register. Uses regex.
         func: Callable, required
             callback for given command
         states: List[str], required
@@ -226,7 +228,7 @@ class TelegramBot:
         Arguments
         ---------
         message: str, required
-            message to register
+            message to register. Uses regex.
         func: Callable, required
             callback for given command
         states: List[str], required
@@ -259,12 +261,17 @@ class TelegramBot:
         message = update.message
         user_id = message.chat.id
         command = message.split()[0].strip('/')
-        if command not in self.__routes['commands']:
+
+        command_exp = None
+        for registered_command from self.__routes['commands']:
+            if re.fullmatch(pattern=registered_command, string=command):
+                command_exp = registered_command
+        if not command_exp:
             return
 
-        func = self.__routes['commands'][command]['function']
-        states = self.__routes['commands'][command]['states']
-        roles = self.__routes['commands'][command]['roles']
+        func = self.__routes['commands'][command_exp]['function']
+        states = self.__routes['commands'][command_exp]['states']
+        roles = self.__routes['commands'][command_exp]['roles']
 
         if self.__has_access(user_id, states, roles):
             func(user_id=user_id, message=message)
@@ -288,18 +295,26 @@ class TelegramBot:
         """
         message = update.message
         user_id = message.chat.id
-        if message not in self.__routes['messages']:
+
+        message_exp = None
+        for registered_message from self.__routes['messages']:
+            if re.fullmatch(pattern=registered_message, string=message):
+                message_exp = registered_message
+        if not message_exp:
             return
 
-        func = self.__routes['messages'][message]['function']
-        states = self.__routes['messages'][message]['states']
-        roles = self.__routes['messages'][message]['roles']
+        func = self.__routes['messages'][message_exp]['function']
+        states = self.__routes['messages'][message_exp]['states']
+        roles = self.__routes['messages'][message_exp]['roles']
 
         if self.__has_access(user_id, states, roles):
             func(user_id=user_id, message=message)
 
-    def route(self, commands: List[str] = None, messages: List[str] = None,
-              states: List[str] = None, roles: List[str] = None) -> Callable:
+    def route(self,
+              commands: List[str] = None,
+              messages: List[str] = None,
+              states: List[str] = None,
+              roles: List[str] = None) -> Callable:
         """
         Decorator providing registering command/message handlers considering roles and states.
         registered handler is accessible only to users with one of given roles AND one of given states.
@@ -308,9 +323,9 @@ class TelegramBot:
         Arguments
         ---------
         commands: List[str], optional (default = None)
-            commands to access given handler. if None, no command is registered with given handler
+            commands to access given handler. If None, no command is registered with given handler. Uses regex.
         messages: List[str], optional (default = None)
-            messages to access given handler. if None, no message is registered with given handler
+            messages to access given handler. If None, no message is registered with given handler. Uses regex.
         states: List[str], optional (default = None)
             states that provide user's access to execute callback function. if None, callback function is available to everyone
         roles: List[str], optional (default = None)
