@@ -158,7 +158,7 @@ class RoleAuth:
 
         return True if role in user_roles else False
 
-    def login_as(self, role: str, user_id: int, password: str) -> None:
+    def login_as(self, role: str, user_id: int, password: str="") -> None:
         '''
         Logs in specified user as a specified role with
 
