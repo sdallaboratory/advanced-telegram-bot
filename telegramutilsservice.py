@@ -1,3 +1,4 @@
+"""
 from role_managing.roleauth import RoleAuth
 from state_managing.statemanager import StateManager
 from user_meta.usermetastorage import UserMetaStorage
@@ -133,3 +134,4 @@ class TelegramUtilsService:
         self.locale_manager = LocaleManager(locales_folder=locales_folder)
         self.logger = BotLogger(storage=storage,
                                 collection_name=logs_collection_name)
+"""

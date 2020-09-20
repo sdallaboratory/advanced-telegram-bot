@@ -1,7 +1,7 @@
 import time
 
-from storage_managing.storage import Storage
-from logs.exceptions.wrongloglevelerror import WrongLogLevelError
+from ..storage_managing.storage import Storage
+from .exceptions.wrongloglevelerror import WrongLogLevelError
 
 
 class BotLogger:

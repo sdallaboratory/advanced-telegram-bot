@@ -3,7 +3,7 @@ from typing import List, Callable
 import telegram as tg
 import telegram.ext as tg_ext
 
-from components import *
+from .components import *
 from .exceptions.initexception import InitException
 
 

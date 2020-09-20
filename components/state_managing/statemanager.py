@@ -1,7 +1,7 @@
-from storage_managing.storage import Storage
-from state_managing.exceptions.stateerror import StateError
-
 from typing import Union
+
+from ..storage_managing.storage import Storage
+from .exceptions.stateerror import StateError
 
 
 class StateManager:

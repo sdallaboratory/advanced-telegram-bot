@@ -1,8 +1,8 @@
-from storage_managing.storage import Storage, StorageException
-from utils.datafiltering import DataFiltering
-
 import os
 import json
+
+from .storage import Storage, StorageException
+from ..utils.datafiltering import DataFiltering
 
 
 class LocalJSONStorage(Storage):

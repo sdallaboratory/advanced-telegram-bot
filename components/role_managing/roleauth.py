@@ -1,10 +1,10 @@
-from utils.filemanager import FileManager
+from ..utils.filemanager import FileManager
 
-from storage_managing.storage import Storage
+from ..storage_managing.storage import Storage
 
-from role_managing.exceptions.passworderror import PasswordError
-from role_managing.exceptions.roleerror import RoleError
-from role_managing.exceptions.alreadyloggederror import AlreadyLoggedError
+from .exceptions.passworderror import PasswordError
+from .exceptions.roleerror import RoleError
+from .exceptions.alreadyloggederror import AlreadyLoggedError
 
 
 class RoleAuth:

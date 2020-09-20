@@ -1,5 +1,5 @@
-from storage_managing.storage import Storage
-from user_meta.exceptions.usermetaerror import UserMetaError
+from ..storage_managing.storage import Storage
+from .exceptions.usermetaerror import UserMetaError
 
 
 class UserMetaStorage:

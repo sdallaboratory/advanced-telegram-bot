@@ -1,2 +1,2 @@
-from components import *
+from .components import *
 from .telegrambot import TelegramBot

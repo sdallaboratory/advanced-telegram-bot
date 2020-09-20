@@ -1,8 +1,9 @@
-from storage_managing.storage import Storage, StorageException
-from utils.datafiltering import DataFiltering
-
 import os
+
 from pymongo import MongoClient
+
+from .storage import Storage, StorageException
+from ..utils.datafiltering import DataFiltering
 
 
 class MongoDBStorage(Storage):

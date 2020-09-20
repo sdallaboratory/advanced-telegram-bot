@@ -6,3 +6,4 @@ from .logs.botlogger import BotLogger
 from .storage_managing.storage import Storage
 from .storage_managing.localjsonstorage import LocalJSONStorage
 from .storage_managing.mongodbstorage import MongoDBStorage
+from .exceptions.telegramboterror import TelegramBotError

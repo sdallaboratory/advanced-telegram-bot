@@ -1,6 +1,6 @@
-from storage_managing.exceptions.storageexception import StorageException
-
 from abc import ABC, abstractmethod
+
+from .exceptions.storageexception import StorageException
 
 
 class Storage(ABC):

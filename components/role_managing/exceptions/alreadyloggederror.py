@@ -1,4 +1,4 @@
-from role_managing.exceptions.roleerror import RoleError
+from .roleerror import RoleError
 
 
 class AlreadyLoggedError(RoleError):

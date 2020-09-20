@@ -1,4 +1,4 @@
-from exceptions.telegramboterror import TelegramBotError
+from ...exceptions.telegramboterror import TelegramBotError
 
 
 class RoleError(TelegramBotError):

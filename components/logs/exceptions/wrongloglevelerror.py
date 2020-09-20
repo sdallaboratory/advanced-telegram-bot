@@ -1,4 +1,4 @@
-from logs.exceptions.botloggererror import BotLoggerError
+from .botloggererror import BotLoggerError
 
 
 class WrongLogLevelError(BotLoggerError):

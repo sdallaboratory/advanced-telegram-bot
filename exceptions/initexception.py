@@ -1,4 +1,4 @@
-from .telegramboterror import TelegramBotError
+from ..components import TelegramBotError
 
 
 class InitException(TelegramBotError):
