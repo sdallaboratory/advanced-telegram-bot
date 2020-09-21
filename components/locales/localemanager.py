@@ -141,3 +141,4 @@ class LocaleManager:
             locale code
         """
         return self.__locales[locale]['replies']['simple'][name]
+
