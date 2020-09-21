@@ -107,6 +107,7 @@ class TelegramBot:
                     'password':  string password
                 }
             }
+            to set role without password, set 'password' value to ''
             the default role 'user' may be not mentioned, in this case password will be empty string ('')
         states: list, required
             list with all possible states that will be available for users
