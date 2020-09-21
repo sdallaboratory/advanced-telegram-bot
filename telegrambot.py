@@ -264,7 +264,7 @@ class TelegramBot:
         command = message.split()[0].strip('/')
 
         command_exp = None
-        for registered_command from self.__routes['commands']:
+        for registered_command in self.__routes['commands']:
             if re.fullmatch(pattern=registered_command, string=command):
                 command_exp = registered_command
         if not command_exp:
@@ -298,7 +298,7 @@ class TelegramBot:
         user_id = message.chat.id
 
         message_exp = None
-        for registered_message from self.__routes['messages']:
+        for registered_message in self.__routes['messages']:
             if re.fullmatch(pattern=registered_message, string=message):
                 message_exp = registered_message
         if not message_exp:
