@@ -22,6 +22,8 @@ class TelegramBot:
     ..........
     Attributes
     ----------
+    storage: Storage, public
+        common storage for all systems (utils)
     role_auth: RoleAuth, public
         role/authorization system
     state_manager: StateManager, public
@@ -71,6 +73,8 @@ class TelegramBot:
         stops bot
     init(): private
         class constructor
+    init_storage(): private
+        builds storage
     has_access(): private
         checks if user has access to execute callback function
     register_command_service(): private
@@ -141,18 +145,9 @@ class TelegramBot:
             - constructor could not initialize storage class
             - some of required arguments are not provided
         """
-        if set(['db_address', 'db_port', 'db_username', 'db_password', 'db_name']).issubset(list(storage_data.keys())):
-            storage = MongoDBStorage(address=storage_data['db_address'],
-                                    port=int(storage_data['db_port']),
-                                    username=storage_data['db_username'],
-                                    password=storage_data['db_password'],
-                                    database=storage_data['db_name'])
-        elif 'storage_folder' in storage_data.keys():
-            storage = LocalJSONStorage(storage_data['storage_folder'])
-        else:
-            raise InitException('Could not initialize storage class')
+        self.storage = self.__init_storage(storage_data)
 
-        params_list = [roles, states, users_collection_name, logs_collection_name, locales_folder]
+        params_list = [roles, states]
         for param in params_list:
              if not param:
                  raise InitException(f'{param} cannot be empty!')
@@ -173,6 +168,18 @@ class TelegramBot:
                                         use_context=True)
         self.__dispatcher = self.__updater.dispatcher
         self.__routes = {"commands": [], "messages": []}
+
+    def __init_storage(self, **kwargs) -> Storage:
+        if set(['db_address', 'db_port', 'db_username', 'db_password', 'db_name']).issubset(list(kwargs.keys())):
+            return MongoDBStorage(address=kwargs['db_address'],
+                                  port=int(kwargs['db_port']),
+                                  username=kwargs['db_username'],
+                                  password=kwargs['db_password'],
+                                  database=kwargs['db_name'])
+        elif 'storage_folder' in kwargs.keys():
+            return LocalJSONStorage(kwargs['storage_folder'])
+        else:
+            raise InitException('Could not initialize storage class')
 
     def __has_access(self, user_id: int, states: List[str], roles: List[str]) -> bool:
         """
