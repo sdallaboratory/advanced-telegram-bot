@@ -260,9 +260,13 @@ class TelegramBot:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        user_id = message.chat.id
-        command = message.split()[0].strip('/')
+        chat = message.chat
+        user_id = chat.id
+        username = chat.username
+        first_name = chat.first_name
+        second_name = chat.second_name
 
+        command = message.split()[0].strip('/')
         command_exp = None
         for registered_command in self.__routes['commands']:
             if re.fullmatch(pattern=registered_command, string=command):
@@ -275,7 +279,11 @@ class TelegramBot:
         roles = self.__routes['commands'][command_exp]['roles']
 
         if self.__has_access(user_id, states, roles):
-            func(user_id=user_id, message=message)
+            func(user_id=user_id,
+                 message=message,
+                 username=username,
+                 first_name=first_name,
+                 second_name=second_name)
 
     def __serve_message(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
         """
@@ -295,7 +303,11 @@ class TelegramBot:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        user_id = message.chat.id
+        chat = message.chat
+        user_id = chat.id
+        username = chat.username
+        first_name = chat.first_name
+        second_name = chat.second_name
 
         message_exp = None
         for registered_message in self.__routes['messages']:
@@ -309,7 +321,11 @@ class TelegramBot:
         roles = self.__routes['messages'][message_exp]['roles']
 
         if self.__has_access(user_id, states, roles):
-            func(user_id=user_id, message=message)
+            func(user_id=user_id,
+                 message=message,
+                 username=username,
+                 first_name=first_name,
+                 second_name=second_name)
 
     def route(self,
               commands: List[str] = None,
