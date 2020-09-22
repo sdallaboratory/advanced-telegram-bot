@@ -155,9 +155,10 @@ class TelegramBot:
         self.role_auth = RoleAuth(storage=storage,
                                   roles=roles,
                                   users_collection=users_collection_name)
+        self.__state_params = state_with_params
         self.state_manager = StateManager(storage=storage,
                                           users_collection=users_collection_name,
-                                          with_params=state_with_params)
+                                          with_params=self.__state_params)
         self.user_meta = UserMetaStorage(storage=storage,
                                          users_collection=users_collection_name)
         self.locale_manager = LocaleManager(locales_folder=locales_folder)
@@ -181,7 +182,7 @@ class TelegramBot:
         else:
             raise InitException('Could not initialize storage class')
 
-    def __has_access(self, user_id: int, states: List[str], roles: List[str]) -> bool:
+    def __has_access(self, user_roles: List[str], user_state: str, states: List[str], roles: List[str]) -> bool:
         """
         Checks if user has access to execute callback function.
         returns True in case user's state is in states list AND
@@ -198,11 +199,11 @@ class TelegramBot:
             list of roles that in combination with correct state gives access
         """
         has_access = False
-        if states and self.state_manager.get_state(user_id) not in states:
+        if states and user_state not in states:
             return has_access
         if roles:
             for role in roles:
-                if self.role_auth.is_loggined_as(role, user_id):
+                if role in user_roles:
                     has_access = True
                     break
         return has_access
@@ -257,6 +258,17 @@ class TelegramBot:
                 chat id that command is received from
             message: str
                 full received message text
+            username: str
+                telegram username of user with user_id
+            first_name: str
+                telegram first name of user with user_id
+            second_name: str
+                telegram second name of user with user_id
+            roles: List[str]
+                roles of user with user_id
+            state: Union[str, dict]
+                state of user presented by state_name if 'state_with_params' was True,
+                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -285,12 +297,20 @@ class TelegramBot:
         states = self.__routes['commands'][command_exp]['states']
         roles = self.__routes['commands'][command_exp]['roles']
 
-        if self.__has_access(user_id, states, roles):
+        user_roles = self.role_auth.get_user_roles(user_id)
+        user_state = self.state_manager.get_state(user_id)
+        if self.__state_params:
+            user_state_name = user_state['State']
+        else:
+            user_state_name = user_state
+        if self.__has_access(user_roles, user_state, states, roles):
             func(user_id=user_id,
                  message=message,
                  username=username,
                  first_name=first_name,
-                 second_name=second_name)
+                 second_name=second_name,
+                 roles=user_roles,
+                 state=user_state)
 
     def __serve_message(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
         """
@@ -300,6 +320,17 @@ class TelegramBot:
                 chat id that command is received from
             message: str
                 full received message text
+            username: str
+                telegram username of user with user_id
+            first_name: str
+                telegram first name of user with user_id
+            second_name: str
+                telegram second name of user with user_id
+            roles: List[str]
+                roles of user with user_id
+            state: Union[str, dict]
+                state of user presented by state_name if 'state_with_params' was True,
+                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -327,12 +358,20 @@ class TelegramBot:
         states = self.__routes['messages'][message_exp]['states']
         roles = self.__routes['messages'][message_exp]['roles']
 
-        if self.__has_access(user_id, states, roles):
+        user_roles = self.role_auth.get_user_roles(user_id)
+        user_state = self.state_manager.get_state(user_id)
+        if self.__state_params:
+            user_state_name = user_state['state']
+        else:
+            user_state_name = user_state
+        if self.__has_access(user_roles, user_state_name, states, roles):
             func(user_id=user_id,
                  message=message,
                  username=username,
                  first_name=first_name,
-                 second_name=second_name)
+                 second_name=second_name,
+                 roles=user_roles,
+                 state=user_state)
 
     def route(self,
               commands: List[str] = None,

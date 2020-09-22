@@ -106,8 +106,8 @@ class RoleAuth:
 
         self.__roles.pop(role)
 
-    def rename_role(self, role: str) -> None:
-        pass
+#    def rename_role(self, role: str) -> None:
+#        pass
 
     def get_user_roles(self, user_id: int) -> list:
         '''
