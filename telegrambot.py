@@ -42,22 +42,22 @@ class TelegramBot:
         list of registered handlers considering roles and states
         should have structure like
         {
-            'commands': [
+            'commands': {
                 '<command>': {
                     'function': callback function with **kwargs,
                     'roles': list of user roles allowed to execute callback function,
                     'states': list of user states allowed to execute callback function,
                 },
                 ...
-            ],
-            'messages': [
+            },
+            'messages': {
                 '<message>': {
                     'function': callback function with **kwargs,
                     'roles': list of user roles allowed to execute callback function,
                     'states': list of user states allowed to execute callback function,
                 },
                 ...
-            ]
+            {
         }
 
     .......
@@ -152,25 +152,44 @@ class TelegramBot:
              if not param:
                  raise InitException(f'{param} cannot be empty!')
 
-        self.role_auth = RoleAuth(storage=storage,
+        self.role_auth = RoleAuth(storage=self.storage,
                                   roles=roles,
                                   users_collection=users_collection_name)
         self.__state_params = state_with_params
-        self.state_manager = StateManager(storage=storage,
+        self.state_manager = StateManager(storage=self.storage,
                                           users_collection=users_collection_name,
                                           with_params=self.__state_params)
-        self.user_meta = UserMetaStorage(storage=storage,
+        self.user_meta = UserMetaStorage(storage=self.storage,
                                          users_collection=users_collection_name)
         self.locale_manager = LocaleManager(locales_folder=locales_folder)
-        self.logger = BotLogger(storage=storage,
+        self.logger = BotLogger(storage=self.storage,
                                 collection_name=logs_collection_name)
 
         self.__updater = tg_ext.Updater(token=bot_token,
                                         use_context=True)
         self.__dispatcher = self.__updater.dispatcher
-        self.__routes = {"commands": [], "messages": []}
+        self.__routes = {"commands": {}, "messages": {}}
 
-    def __init_storage(self, **kwargs) -> Storage:
+    def __init_storage(self, kwargs: dict) -> Storage:
+        """
+        Initialises self.storage class with given args.
+
+        .........
+        Arguments
+        ---------
+        kwargs: dict, required
+            all the params connected with db usage:
+                db_address: str, required
+                    ip address of db
+                db_port: Union[int, str], required
+                    port of db
+                db_username: str, required
+                    username that can be used to access db
+                db_password: str, required
+                    password to given username
+                db_name: str, required
+                    name of db to connect
+        """
         if set(['db_address', 'db_port', 'db_username', 'db_password', 'db_name']).issubset(list(kwargs.keys())):
             return MongoDBStorage(address=kwargs['db_address'],
                                   port=int(kwargs['db_port']),
@@ -198,15 +217,17 @@ class TelegramBot:
         roles: List[str], required
             list of roles that in combination with correct state gives access
         """
-        has_access = False
         if states and user_state not in states:
-            return has_access
+            return False
+
         if roles:
             for role in roles:
                 if role in user_roles:
-                    has_access = True
-                    break
-        return has_access
+                    return True
+        else:
+            return True
+
+        return False
 
     def __register_command_service(self, command: str, func: Callable,
                                    states: List[str], roles: List[str]) -> None:
@@ -225,7 +246,7 @@ class TelegramBot:
         roles: List[str], required
             list of roles that in combination with correct state give user access to execute callback function
         """
-        self.__routes['commands'].append({command: {'function': func, 'states': states, 'roles': roles}})
+        self.__routes['commands'][command] = {'function': func, 'states': states, 'roles': roles}
         self.__dispatcher.add_handler(tg_ext.CommandHandler(command, callback=self.__serve_command))
 
     def __register_message_service(self, message: str, func: Callable,
@@ -245,7 +266,7 @@ class TelegramBot:
         roles: List[str], required
             list of roles that in combination with correct state give user access to execute callback function
         """
-        self.__routes['messages'].append({message: {'function': func, 'states': states, 'roles': roles}})
+        self.__routes['messages'][message] = {'function': func, 'states': states, 'roles': roles}
         self.__dispatcher.add_handler(tg_ext.MessageHandler(filters=tg_ext.Filters.text([message]),
                                                             callback=self.__serve_message))
 
@@ -262,8 +283,8 @@ class TelegramBot:
                 telegram username of user with user_id
             first_name: str
                 telegram first name of user with user_id
-            second_name: str
-                telegram second name of user with user_id
+            last_name: str
+                telegram last name of user with user_id
             roles: List[str]
                 roles of user with user_id
             state: Union[str, dict]
@@ -280,14 +301,16 @@ class TelegramBot:
         """
         message = update.message
         chat = message.chat
+
+        message = message.text
         user_id = chat.id
         username = chat.username
         first_name = chat.first_name
-        second_name = chat.second_name
+        last_name = chat.last_name
 
         command = message.split()[0].strip('/')
         command_exp = None
-        for registered_command in self.__routes['commands']:
+        for registered_command in list(self.__routes['commands'].keys()):
             if re.fullmatch(pattern=registered_command, string=command):
                 command_exp = registered_command
         if not command_exp:
@@ -297,8 +320,8 @@ class TelegramBot:
         states = self.__routes['commands'][command_exp]['states']
         roles = self.__routes['commands'][command_exp]['roles']
 
-        user_roles = self.role_auth.get_user_roles(user_id)
-        user_state = self.state_manager.get_state(user_id)
+        user_roles = self.role_auth.get_user_roles(user_id) if roles else []
+        user_state = self.state_manager.get_state(user_id) if states else []
         if self.__state_params:
             user_state_name = user_state['State']
         else:
@@ -308,7 +331,7 @@ class TelegramBot:
                  message=message,
                  username=username,
                  first_name=first_name,
-                 second_name=second_name,
+                 last_name=last_name,
                  roles=user_roles,
                  state=user_state)
 
@@ -324,8 +347,8 @@ class TelegramBot:
                 telegram username of user with user_id
             first_name: str
                 telegram first name of user with user_id
-            second_name: str
-                telegram second name of user with user_id
+            last_name: str
+                telegram last name of user with user_id
             roles: List[str]
                 roles of user with user_id
             state: Union[str, dict]
@@ -342,13 +365,14 @@ class TelegramBot:
         """
         message = update.message
         chat = message.chat
+        message = message.text
         user_id = chat.id
         username = chat.username
         first_name = chat.first_name
-        second_name = chat.second_name
+        last_name = chat.last_name
 
         message_exp = None
-        for registered_message in self.__routes['messages']:
+        for registered_message in list(self.__routes['messages'].keys()):
             if re.fullmatch(pattern=registered_message, string=message):
                 message_exp = registered_message
         if not message_exp:
@@ -358,8 +382,8 @@ class TelegramBot:
         states = self.__routes['messages'][message_exp]['states']
         roles = self.__routes['messages'][message_exp]['roles']
 
-        user_roles = self.role_auth.get_user_roles(user_id)
-        user_state = self.state_manager.get_state(user_id)
+        user_roles = self.role_auth.get_user_roles(user_id) if roles else []
+        user_state = self.state_manager.get_state(user_id) if states else []
         if self.__state_params:
             user_state_name = user_state['state']
         else:
@@ -369,7 +393,7 @@ class TelegramBot:
                  message=message,
                  username=username,
                  first_name=first_name,
-                 second_name=second_name,
+                 last_name=last_name,
                  roles=user_roles,
                  state=user_state)
 
