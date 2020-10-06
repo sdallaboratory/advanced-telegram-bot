@@ -111,8 +111,8 @@ class FileManager:
         dir_path: str, required
             path of directory to list files from
         """
-        return [dir_path + content for content in os.listdir(dir_path)\
-            if FileManager.is_file(dir_path + content)]
+        return [dir_path + '/' + content for content in os.listdir(dir_path)\
+            if FileManager.is_file(dir_path + '/' + content)]
 
     @staticmethod
     def make_dir(dir_path: str) -> None:

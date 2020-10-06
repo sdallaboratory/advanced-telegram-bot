@@ -201,6 +201,15 @@ class TelegramBot:
         else:
             raise InitException('Could not initialize storage class')
 
+    def __init_user(self, user_id: int, username: str, first_name: str, last_name: str) -> None:
+        self.user_meta.user_initialize(user_id, init_dict={
+                'Roles': ['user'],
+                'State': 'free',
+                'State_Params': []
+            })
+        self.user_meta.user_update(user_id=user_id, username=username,
+                                   first_name=first_name, last_name=last_name)
+
     def __has_access(self, user_roles: List[str], user_state: str, states: List[str], roles: List[str]) -> bool:
         """
         Checks if user has access to execute callback function.
@@ -309,6 +318,10 @@ class TelegramBot:
         last_name = chat.last_name
 
         command = message.split()[0].strip('/')
+        if command == 'start':
+            self.__init_user(user_id=user_id, username=username,
+                             first_name=first_name, last_name=last_name)
+
         command_exp = None
         for registered_command in list(self.__routes['commands'].keys()):
             if re.fullmatch(pattern=registered_command, string=command):
