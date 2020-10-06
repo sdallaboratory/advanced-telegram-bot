@@ -465,7 +465,9 @@ class TelegramBot:
             flag that requests clients to resize keyboard
         """
         if reply_keyboard:
-            reply_keyboard = tg.ReplyKeyboardMarkup(reply_keyboard, reply_keyboard_resize)
+            reply_keyboard = tg.ReplyKeyboardMarkup(keyboard=reply_keyboard,
+                                                    resize_keyboard=reply_keyboard_resize,
+                                                    one_time_keyboard=True)
 
         self.__updater.bot.send_message(chat_id=user_id,
                                         text=message,

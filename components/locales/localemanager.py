@@ -1,3 +1,4 @@
+import copy
 from typing import Any
 
 from ..utils.filemanager import FileManager
@@ -106,7 +107,7 @@ class LocaleManager:
         locale: str, required
             locale code
         """
-        buttons = self.__locales[locale]['keyboards']['arrangements'][name]
+        buttons = copy.deepcopy(self.__locales[locale]['keyboards']['arrangements'][name])
         for i in range(len(buttons)):
             for j in range(len(buttons[i])):
                 buttons[i][j] = self.__get_keyboard_button(buttons[i][j], locale)
