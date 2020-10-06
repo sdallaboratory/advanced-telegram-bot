@@ -37,22 +37,6 @@ class LocaleManager:
         self.__locales = dict()
         self.__load_locales(locales_folder)
 
-    def __get_keyboard_button(self, button: str, locale: str) -> str:
-        """
-        Gets button with given name.
-        Locale file must contain 'keyboards':'buttons':'<button>' structure.
-
-        .........
-        Arguments
-        ---------
-        button: str, required
-            button name
-        locale: str, required
-            locale code
-        """
-        return self.__locales[locale]['keyboards']['buttons'][button]
-
-
     def __load_locales(self, locales_folder: str) -> None:
         """
         Loads all found locales json files from given folder into locales attribute.
@@ -110,9 +94,23 @@ class LocaleManager:
         buttons = copy.deepcopy(self.__locales[locale]['keyboards']['arrangements'][name])
         for i in range(len(buttons)):
             for j in range(len(buttons[i])):
-                buttons[i][j] = self.__get_keyboard_button(buttons[i][j], locale)
+                buttons[i][j] = self.get_keyboard_button(buttons[i][j], locale)
         return buttons
 
+    def get_keyboard_button(self, button: str, locale: str) -> str:
+        """
+        Gets button with given name.
+        Locale file must contain 'keyboards':'buttons':'<button>' structure.
+
+        .........
+        Arguments
+        ---------
+        button: str, required
+            button name
+        locale: str, required
+            locale code
+        """
+        return self.__locales[locale]['keyboards']['buttons'][button]
 
     def get_other(self, name: str, locale: str) -> Any:
         """
