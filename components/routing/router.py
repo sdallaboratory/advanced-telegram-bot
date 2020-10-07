@@ -61,8 +61,8 @@ class Router:
 
     def __find_message_routes(self,
                               message: str,
-                              roles: List[str],
-                              state: str) -> List[MessageRoute]:
+                              state: str,
+                              roles: List[str]) -> List[MessageRoute]:
         found_routes = []
 
         for message_route in self.__message_routes:
