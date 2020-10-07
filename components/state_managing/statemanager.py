@@ -40,7 +40,7 @@ class StateManager:
         self.__storage = storage
         self.__with_params = with_params
 
-    def get_state(self, user_id: int) -> Union[str, dict]:
+    def get_state(self, user_id: int) -> str:
         '''
         Gives a state of specified user
 
@@ -60,24 +60,39 @@ class StateManager:
         StateError
             Raises an exception if user was not found
         '''
-        if self.__with_params:
-            columns = [self.__status_column, self.__params_column]
-        else:
-            columns = [self.__status_column]
+        # if self.__with_params:
+        #     columns = [self.__status_column, self.__params_column]
+        # else:
+        columns = [self.__status_column]
 
         response = self.__storage.get_data_by_column(collection=self.__users_collection,
                                                     by=self.__id_column,
                                                     value=user_id,
                                                     columns=columns)
         if not response:
-            raise StateError("User not found!")
+            raise StateError("User was not found!")
 
         state = response[0]
 
-        if self.__with_params:
-            return state
-        else:
-            return state[self.__status_column]
+        # if self.__with_params:
+        #     return state
+        # else:
+        return state[self.__status_column]
+
+    def get_state_params(self, user_id: int) -> dict:
+        if not self.__with_params:
+            raise StateError("Class was initialized with no params")
+        columns = [self.__params_column]
+
+        response = self.__storage.get_data_by_column(collection=self.__users_collection,
+                                                    by=self.__id_column,
+                                                    value=user_id,
+                                                    columns=columns)
+        if not response:
+            raise StateError("User was not found")
+
+        state = response[0]
+        return state[self.__params_column]
 
     def is_free(self, user_id: int) -> bool:
         '''
