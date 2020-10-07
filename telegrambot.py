@@ -38,28 +38,8 @@ class TelegramBot:
         `python-telegram-bot` class, providing a frontend to telegram bot
     dispatcher: telegram.ext.Dispatcher, private
         `python-telegram-bot` class, dispatching all kinds of updates
-    routes: dict, private
-        list of registered handlers considering roles and states
-        should have structure like
-        {
-            'commands': {
-                '<command>': {
-                    'function': callback function with **kwargs,
-                    'roles': list of user roles allowed to execute callback function,
-                    'states': list of user states allowed to execute callback function,
-                },
-                ...
-            },
-            'messages': {
-                '<message>': {
-                    'function': callback function with **kwargs,
-                    'roles': list of user roles allowed to execute callback function,
-                    'states': list of user states allowed to execute callback function,
-                },
-                ...
-            {
-        }
-
+    router: Router, private
+        incoming messages callback manager
     .......
     Methods
     -------
@@ -75,16 +55,6 @@ class TelegramBot:
         class constructor
     init_storage(): private
         builds storage
-    has_access(): private
-        checks if user has access to execute callback function
-    register_command_service(): private
-        registers given command handler
-    register_message_service(): private
-        registers given message handler
-    serve_command(): private
-        handler for all registered commands, distributes callback functions to received commands
-    serve_message(): private
-        handler for all registered messages, distributes callback functions to received messages
     """
     def __init__(self,
                  bot_token: str,
@@ -168,7 +138,9 @@ class TelegramBot:
         self.__updater = tg_ext.Updater(token=bot_token,
                                         use_context=True)
         self.__dispatcher = self.__updater.dispatcher
-        self.__routes = {"commands": {}, "messages": {}}
+        self.__router = Router(self.__dispatcher, self.state_manager, self.role_auth)
+
+        self.__router.register_command_route(CommandRoute('start', self.__init_user, [], []))
 
     def __init_storage(self, kwargs: dict) -> Storage:
         """
@@ -201,214 +173,14 @@ class TelegramBot:
         else:
             raise InitException('Could not initialize storage class')
 
-    def __init_user(self, user_id: int, username: str, first_name: str, last_name: str) -> None:
-        self.user_meta.user_initialize(user_id, init_dict={
+    def __init_user(self, **kwargs) -> None:
+        self.user_meta.user_initialize(kwargs['user_id'], init_dict={
                 'Roles': ['user'],
                 'State': 'free',
                 'State_Params': []
             })
-        self.user_meta.user_update(user_id=user_id, username=username,
-                                   first_name=first_name, last_name=last_name)
-
-    def __has_access(self, user_roles: List[str], user_state: str, states: List[str], roles: List[str]) -> bool:
-        """
-        Checks if user has access to execute callback function.
-        returns True in case user's state is in states list AND
-                             user is loginned as one of roles for given list
-
-        .........
-        Arguments
-        ---------
-        user_id: int, required
-            id of user to check for access
-        states: List[str], required
-            list of states that in combination with correct role give access
-        roles: List[str], required
-            list of roles that in combination with correct state gives access
-        """
-        if states and user_state not in states:
-            return False
-
-        if roles:
-            for role in roles:
-                if role in user_roles:
-                    return True
-        else:
-            return True
-
-        return False
-
-    def __register_command_service(self, command: str, func: Callable,
-                                   states: List[str], roles: List[str]) -> None:
-        """
-        Registers given command handler.
-
-        .........
-        Arguments
-        ---------
-        command: str, required
-            command to register. Uses regex.
-        func: Callable, required
-            callback for given command
-        states: List[str], required
-            list of states that in combination with correct role give user access to execute callback function
-        roles: List[str], required
-            list of roles that in combination with correct state give user access to execute callback function
-        """
-        self.__routes['commands'][command] = {'function': func, 'states': states, 'roles': roles}
-        self.__dispatcher.add_handler(tg_ext.CommandHandler(command, callback=self.__serve_command))
-
-    def __register_message_service(self, message: str, func: Callable,
-                                   states: List[str], roles: List[str]) -> None:
-        """
-        Registers given message handler.
-
-        .........
-        Arguments
-        ---------
-        message: str, required
-            message to register. Uses regex.
-        func: Callable, required
-            callback for given command
-        states: List[str], required
-            list of states that in combination with correct role give user access to execute callback function
-        roles: List[str], required
-            list of roles that in combination with correct state give user access to execute callback function
-        """
-        self.__routes['messages'][message] = {'function': func, 'states': states, 'roles': roles}
-        self.__dispatcher.add_handler(tg_ext.MessageHandler(filters=tg_ext.Filters.text([message]),
-                                                            callback=self.__serve_message))
-
-    def __serve_command(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
-        """
-        Handler for all registered commands, distributes callback functions to received commands.
-        command is considered to start with '/' and end with end of string or space.
-        Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
-            message: str
-                full received message text
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
-
-        .........
-        Arguments
-        ---------
-        update: telegram.Update, required
-            `python-telegram-bot` class, representing an incoming update
-        context: telegram.ext.CallbackContext, required
-            `python-telegram-bot` class. context passed by telegram handler to callback
-        """
-        message = update.message
-        chat = message.chat
-
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
-
-        command = message.split()[0].strip('/')
-        if command == 'start':
-            self.__init_user(user_id=user_id, username=username,
-                             first_name=first_name, last_name=last_name)
-
-        command_exp = None
-        for registered_command in list(self.__routes['commands'].keys()):
-            if re.fullmatch(pattern=registered_command, string=command):
-                command_exp = registered_command
-        if not command_exp:
-            return
-
-        func = self.__routes['commands'][command_exp]['function']
-        states = self.__routes['commands'][command_exp]['states']
-        roles = self.__routes['commands'][command_exp]['roles']
-
-        user_roles = self.role_auth.get_user_roles(user_id) if roles else []
-        user_state = self.state_manager.get_state(user_id) if states else []
-        if self.__state_params:
-            user_state_name = user_state['State']
-        else:
-            user_state_name = user_state
-        if self.__has_access(user_roles, user_state, states, roles):
-            func(user_id=user_id,
-                 message=message,
-                 username=username,
-                 first_name=first_name,
-                 last_name=last_name,
-                 roles=user_roles,
-                 state=user_state)
-
-    def __serve_message(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
-        """
-        Handler for all registered messages, distributes callback functions to received messages.
-        Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
-            message: str
-                full received message text
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
-
-        .........
-        Arguments
-        ---------
-        update: telegram.Update, required
-            `python-telegram-bot` class, representing an incoming update
-        context: telegram.ext.CallbackContext, required
-            `python-telegram-bot` class. context passed by telegram handler to callback
-        """
-        message = update.message
-        chat = message.chat
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
-
-        message_exp = None
-        for registered_message in list(self.__routes['messages'].keys()):
-            if re.fullmatch(pattern=registered_message, string=message):
-                message_exp = registered_message
-        if not message_exp:
-            return
-
-        func = self.__routes['messages'][message_exp]['function']
-        states = self.__routes['messages'][message_exp]['states']
-        roles = self.__routes['messages'][message_exp]['roles']
-
-        user_roles = self.role_auth.get_user_roles(user_id) if roles else []
-        user_state = self.state_manager.get_state(user_id) if states else []
-        if self.__state_params:
-            user_state_name = user_state['state']
-        else:
-            user_state_name = user_state
-        if self.__has_access(user_roles, user_state_name, states, roles):
-            func(user_id=user_id,
-                 message=message,
-                 username=username,
-                 first_name=first_name,
-                 last_name=last_name,
-                 roles=user_roles,
-                 state=user_state)
+        self.user_meta.user_update(user_id=kwargs['user_id'], username=kwargs['username'],
+                                   first_name=['first_name'], last_name=['last_name'])
 
     def route(self,
               commands: List[str] = None,
@@ -435,13 +207,17 @@ class TelegramBot:
             states = []
         if roles is None:
             roles = []
+        if not commands and not messages:
+            messages = ['(?s).*'] # matches every message
         def decorator(func: Callable) -> Callable:
             if commands:
                 for command in commands:
-                    self.__register_command_service(command, func, states, roles)
+                    self.__router.register_command_route(
+                            CommandRoute(command, func, states, roles))
             if messages:
                 for message in messages:
-                    self.__register_message_service(message, func, states, roles)
+                    self.__router.register_message_route(
+                            MessageRoute(message, func, states, roles))
             return func
 
         return decorator

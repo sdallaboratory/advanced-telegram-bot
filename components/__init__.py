@@ -6,4 +6,9 @@ from .logs.botlogger import BotLogger
 from .storage_managing.storage import Storage
 from .storage_managing.localjsonstorage import LocalJSONStorage
 from .storage_managing.mongodbstorage import MongoDBStorage
+
+from .routing.router import Router
+from .routing.commandroute import CommandRoute
+from .routing.messageroute import MessageRoute
+
 from .exceptions.telegramboterror import TelegramBotError
