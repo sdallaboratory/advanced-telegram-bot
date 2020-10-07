@@ -113,7 +113,7 @@ class Router:
         last_name = chat.last_name
 
         command = message.split()[0].strip('/')
-        try:
+        try: # try-except for user start initialization when he is not in db
             user_state = self.__state_manager.get_state(user_id)
             user_roles = self.__role_auth.get_user_roles(user_id)
         except (StateError, RoleError):
@@ -168,7 +168,7 @@ class Router:
         first_name = chat.first_name
         last_name = chat.last_name
 
-        try:
+        try: # try-except for user start initialization when he is not in db
             user_state = self.__state_manager.get_state(user_id)
             user_roles = self.__role_auth.get_user_roles(user_id)
         except (StateError, RoleError):
