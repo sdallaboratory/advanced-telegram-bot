@@ -5,7 +5,10 @@ import telegram as tg
 import telegram.ext as tg_ext
 
 from ..state_managing.statemanager import StateManager
+from ..state_managing.exceptions.stateerror import StateError
 from ..role_managing.roleauth import RoleAuth
+from ..role_managing.exceptions.roleerror import RoleError
+
 from .commandroute import CommandRoute
 from .messageroute import MessageRoute
 
@@ -110,8 +113,12 @@ class Router:
         last_name = chat.last_name
 
         command = message.split()[0].strip('/')
-        user_state = self.__state_manager.get_state(user_id)
-        user_roles = self.__role_auth.get_user_roles(user_id)
+        try:
+            user_state = self.__state_manager.get_state(user_id)
+            user_roles = self.__role_auth.get_user_roles(user_id)
+        except (StateError, RoleError):
+            user_state = 'free'
+            user_roles = ['user']
 
         found_routes = self.__find_command_routes(command, user_state, user_roles)
 
@@ -161,8 +168,12 @@ class Router:
         first_name = chat.first_name
         last_name = chat.last_name
 
-        user_state = self.__state_manager.get_state(user_id)
-        user_roles = self.__role_auth.get_user_roles(user_id)
+        try:
+            user_state = self.__state_manager.get_state(user_id)
+            user_roles = self.__role_auth.get_user_roles(user_id)
+        except (StateError, RoleError):
+            user_state = 'free'
+            user_roles = ['user']
 
         found_routes = self.__find_message_routes(message, user_state, user_roles)
 

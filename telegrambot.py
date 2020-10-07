@@ -180,7 +180,7 @@ class TelegramBot:
                 'State_Params': []
             })
         self.user_meta.user_update(user_id=kwargs['user_id'], username=kwargs['username'],
-                                   first_name=['first_name'], last_name=['last_name'])
+                                   first_name=kwargs['first_name'], last_name=kwargs['last_name'])
 
     def route(self,
               commands: List[str] = None,
