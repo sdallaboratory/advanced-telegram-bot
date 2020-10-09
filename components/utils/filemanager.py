@@ -7,9 +7,14 @@ class FileManager:
     """
     Static auxiliary  class to simplify data processing
 
-    ...
+    ..........
+    Attributes
+    encoding: str, public
+        encoding to open files with
+
+    .......
     Methods
-    ---
+    -------
     clean_file(file_path)
         removes all data from given file
     copy_content(src_path, dest_path)
@@ -33,6 +38,9 @@ class FileManager:
     remove_file(file_path)
         removes given file
     """
+
+    encoding = "utf-8"
+
     @staticmethod
     def clean_file(file_path: str) -> None:
         """
@@ -169,7 +177,7 @@ class FileManager:
         """
         if not FileManager.file_exists(file_path):
             return
-        with open(file_path, 'r') as fd:
+        with open(file_path, 'r', encoding=FileManager.encoding) as fd:
             try:
                 return json.load(fd)
             except Exception as e:
