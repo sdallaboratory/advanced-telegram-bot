@@ -144,7 +144,7 @@ class TelegramBot:
 
     def __init_storage(self, kwargs: dict) -> Storage:
         """
-        Initialises self.storage class with given args.
+        Returns initialized Storage class with given args.
 
         .........
         Arguments
@@ -188,14 +188,14 @@ class TelegramBot:
               states: List[str] = None,
               roles: List[str] = None) -> Callable:
         """
-        Decorator providing registering command/message handlers considering roles and states.
+        Decorator providing registering command/text message handlers considering roles and states.
         registered handler is accessible only to users with one of given roles AND one of given states.
 
         .........
         Arguments
         ---------
         commands: List[str], optional (default = None)
-            commands to access given handler. If None, no command is registered with given handler. Uses regex.
+            commands to access given handler. If None, no command is registered with given handler
         messages: List[str], optional (default = None)
             messages to access given handler. If None, no message is registered with given handler. Uses regex.
         states: List[str], optional (default = None)

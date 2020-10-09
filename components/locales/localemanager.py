@@ -16,15 +16,19 @@ class LocaleManager:
 
     Methods
     ---
-    load_locales(locales_folder)
+    load_locales(): private
         loads all found locales json files from given folder into locales attribute
-    load_locale(locale_path)
+    load_locale(): private
         loads locale from given path (must be json file)
-    get_format_reply(name, locale)
+    get_format_reply(): public
         gets reply with given name which requires formatting
-    get_other(name, locale)
+    get_keyboard(): public
+        gets keyboard as list of buttons
+    get_keyboard_button(): public
+        gets button with given name
+    get_other() public
         gets other locale-dependent data with given name
-    get_simple_reply(name, locale)
+    get_simple_reply(): public
         gets reply with given name which does not require formatting
     """
     def __init__(self, locales_folder: str) -> None:

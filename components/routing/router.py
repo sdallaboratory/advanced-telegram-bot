@@ -25,15 +25,23 @@ class Router:
     command_routes: List[CommandRoute], private
         list of commands routes (commands start with /)
     tg: telegram.ext.Dispatcher, private
-        telegram bot class, dispatching all kinds of updates
+        `python-telegram-bot` class, dispatching all kinds of updates
+    state_manager: StateManager, private
+        class managing user states
+    role_auth: RoleAuth, private
+        class managing user roles
 
     .......
     Methods
     -------
     register_command_route(): public
         registers given command handler
-    register_message_route(): private
+    register_message_route(): public
         registers given message handler
+    find_command_routes(): private
+        finds all command routes that are accessible with user state and roles and triggered with command
+    find_message_routes(): private
+        finds all message routes that are accessible with user state and roles and triggered with message
     serve_command_route(): private
         handler for all registered commands, distributes callback functions to received commands
     serve_message_route(): private
@@ -43,6 +51,19 @@ class Router:
                  tg_dispatcher: tg_ext.Dispatcher,
                  state_manager: StateManager,
                  role_auth: RoleAuth) -> None:
+        """
+        Constructor.
+
+        .........
+        Arguments
+        ---------
+        tg_dispatcher: telegram.ext.Dispatcher, required
+            `python-telegram-bot` class, dispatching all kinds of updates
+        state_manager: StateManager, required
+            state system
+        role_auth: RoleAuth, required
+            role/authorization system
+        """
         self.__message_routes: List[MessageRoute] = []
         self.__command_routes: List[CommandRoute] = []
 
@@ -54,6 +75,19 @@ class Router:
                               command: str,
                               state: str,
                               roles: List[str]) -> List[CommandRoute]:
+        """
+        Finds all command routes that are accessible with user state and roles and triggered with command
+
+        .........
+        Arguments
+        ---------
+        command: str, requited
+            trigger command to serve the route
+        state: str, required
+            user state for access to serving the route
+        roles: List[str], required
+            user roles for access to serving the route
+        """
         found_routes = []
 
         for command_route in self.__command_routes:
@@ -66,6 +100,19 @@ class Router:
                               message: str,
                               state: str,
                               roles: List[str]) -> List[MessageRoute]:
+        """
+        Finds all message routes that are accessible with user state and roles and triggered with message
+
+        .........
+        Arguments
+        ---------
+        message: str, requited
+            trigger regex message text to serve the route
+        state: str, required
+            user state for access to serving the route
+        roles: List[str], required
+            user roles for access to serving the route
+        """
         found_routes = []
 
         for message_route in self.__message_routes:

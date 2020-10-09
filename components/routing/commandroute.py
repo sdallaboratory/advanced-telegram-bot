@@ -18,6 +18,21 @@ class CommandRoute(Route):
                  callback: Callable,
                  states: List[str],
                  roles: List[str]) -> None:
+        """
+        Constructor.
+
+        .........
+        Arguments
+        ---------
+        command: str, requited
+            trigger command to serve the route
+        callback: Callable, required
+            function to be called when route is served
+        states: List[str]
+            states one of which user should have to access serving the route
+        roles: List[str]
+            roles one of which user should have to access serving the route
+        """
         super().__init__(callback, states, roles)
 
         self.command = command

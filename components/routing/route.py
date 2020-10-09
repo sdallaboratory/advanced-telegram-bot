@@ -11,10 +11,10 @@ class Route:
     callback: Callable, public
         function to be called when route is served
     states: List[str], public
-        states user should have to access serving the route
+        states one of which user should have to access serving the route
         empty list means that every state is valid
     roles: List[str], public
-        roles user should have to access serving the route
+        roles one of which user should have to access serving the route
         empty list means that every role is valid
     """
     def __init__(self,
@@ -30,9 +30,9 @@ class Route:
         callback: Callable, required
             function to be called when route is served
         states: List[str]
-            states user should have to access serving the route
+            states one of which user should have to access serving the route
         roles: List[str]
-            roles user should have to access serving the route
+            roles one of which user should have to access serving the route
         """
         self.callback = callback
         self.states = states
@@ -42,15 +42,15 @@ class Route:
         """
         Checks if route is accessible to serve with given state and roles.
         returns True in case user's state is in states list AND
-                             user is loginned as one of roles for given list
+                             user is loginned as one of roles in given list
 
         .........
         Arguments
         ---------
         state: str, required
-            state that in combination with correct roles gives access
+            user state to check for access to serving the route
         roles: List[str], required
-            list of roles that in combination with correct state give access
+            user roles to check for access to serving the route
         """
         if self.states and state not in self.states:
             return False
