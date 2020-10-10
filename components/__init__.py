@@ -11,4 +11,6 @@ from .routing.router import Router
 from .routing.commandroute import CommandRoute
 from .routing.messageroute import MessageRoute
 
+from .messaging.messagesender import MessageSender
+
 from .exceptions.telegramboterror import TelegramBotError

@@ -38,6 +38,8 @@ class TelegramBot:
         `python-telegram-bot` class, providing a frontend to telegram bot
     dispatcher: telegram.ext.Dispatcher, private
         `python-telegram-bot` class, dispatching all kinds of updates
+    sender: MessageSender, public
+        outcoming messages manager
     router: Router, private
         incoming messages callback manager
     .......
@@ -45,8 +47,6 @@ class TelegramBot:
     -------
     route(): public
         decorator providing registering command/message handlers considering roles and states
-    send_message(): public
-        sends message to user
     start(): public
         starts bot and sets it to idle
     stop(): public
@@ -138,6 +138,8 @@ class TelegramBot:
         self.__updater = tg_ext.Updater(token=bot_token,
                                         use_context=True)
         self.__dispatcher = self.__updater.dispatcher
+
+        self.sender = MessageSender(self.__updater, self.logger)
         self.__router = Router(self.__dispatcher, self.state_manager, self.role_auth)
 
         self.__router.register_command_route(CommandRoute('start', self.__init_user, [], []))
@@ -221,34 +223,6 @@ class TelegramBot:
             return func
 
         return decorator
-
-    def send_message(self, user_id: int, message: str,
-                     reply_keyboard: List[List[str]] = None,
-                     reply_keyboard_resize: bool = True) -> None:
-        """
-        Sends message to user.
-
-        .........
-        Arguments
-        ---------
-        user_id: int, required
-            id of user whom to send message
-        message: str, required
-            text of sending message
-        reply_keyboard: List[List[str]], optional (default = None)
-            reply keyboard buttons' texts. if None, no reply keyboard is sended with message
-        reply_keyboard_resize: bool, optional (default = True)
-            flag that requests clients to resize keyboard
-        """
-        if reply_keyboard:
-            reply_keyboard = tg.ReplyKeyboardMarkup(keyboard=reply_keyboard,
-                                                    resize_keyboard=reply_keyboard_resize,
-                                                    one_time_keyboard=True)
-
-        self.__updater.bot.send_message(chat_id=user_id,
-                                        text=message,
-                                        reply_markup=reply_keyboard)
-        self.logger.log_send_msg(id=user_id, text=message)
 
     def start(self) -> None:
         """
