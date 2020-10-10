@@ -27,6 +27,17 @@ class MessageSender:
     def __init__(self,
                  updater: tg_ext.Updater,
                  logger: BotLogger) -> None:
+        """
+        Constructor.
+
+        .........
+        Arguments
+        ---------
+        updater: telegram.ext.Updater, required
+            `python-telegram-bot` class, providing a frontend to telegram bot
+        logger: BotLogger, required
+            logger/logs manager
+        """
         self.__updater = updater
         self.__logger = logger
 
@@ -47,9 +58,11 @@ class MessageSender:
         text: str, required
             text of sending message
         reply_keyboard: List[List[str]], optional (default = None)
-            reply keyboard buttons' texts. if None, no reply keyboard is sended with message
+            reply keyboard buttons' texts
         reply_keyboard_resize: bool, optional (default = True)
             flag that requests clients to resize keyboard
+        one_time_keyboard: bool, optional (default = True)
+            flag that removes older keyboard or hides present one after it is used
         """
         if reply_keyboard is None:
             if one_time_keyboard:
@@ -63,3 +76,4 @@ class MessageSender:
                                                   text=text,
                                                   reply_markup=reply_keyboard)
         self.__logger.log_send_msg(id=user_id, text=text)
+
