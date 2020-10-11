@@ -51,9 +51,8 @@ class StateManager:
 
         Returns
         -------
-        Union[str, dict]
-            user's status string, if with_params = False
-            user's status and state_params if with_params = True
+        str
+            user's status string
 
         Raises
         ------
@@ -80,6 +79,24 @@ class StateManager:
         return state[self.__status_column]
 
     def get_state_params(self, user_id: int) -> dict:
+                '''
+        Gives a state params of specified user
+
+        Parameters
+        ----------
+        user_id : int
+            User's id from the storage
+
+        Returns
+        -------
+        dict
+            user's state_params if with_params = True
+
+        Raises
+        ------
+        StateError
+            Raises an exception if user was not found
+        '''
         if not self.__with_params:
             raise StateError("Class was initialized with no params")
         columns = [self.__params_column]
