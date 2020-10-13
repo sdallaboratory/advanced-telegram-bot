@@ -35,5 +35,5 @@ from telegrambot import TelegramBot
 ```
 
 ### Documentation & help
-Help can be found in our [wiki pages](https://github.com/advanced-telegram-bot/wiki).
+Help can be found in our [wiki pages](https://github.com/sdallaboratory/advanced-telegram-bot/wiki).
 
