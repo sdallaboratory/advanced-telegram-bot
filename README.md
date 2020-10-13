@@ -13,6 +13,7 @@ made by [SDAL](https://sdal.pw/ "sdal"):
 [usual-one](https://github.com/usual-one "usual-one")
 
 ### Available utils
+- Incoming/outcoming messages service
 - Locale-dependent data storage
 - Logger
 - Role system
@@ -20,9 +21,7 @@ made by [SDAL](https://sdal.pw/ "sdal"):
 - User meta data storage
 
 ### Dependencies
-```
-pymongo >= 3.0
-```
+All the dependencies can be found in `requirements.txt` file.
 
 ### Installation
 ```
@@ -32,37 +31,6 @@ pip install advanced-telegram-bot
 ### Usage
 Just import the class and you're good to go
 ```
-from telegramutilsservice import TelegramUtilsService
+from telegrambot import TelegramBot
 ```
 
-### Ways of storing your data
-##### MongoDB
-To use mongo as a storage you have to provide its data for authorization to the class like so:
-```
-TelegramUtilsService(
-	roles = { roles dict here },
-	states = [ states list here ],
-	users_collection_name="users-collection-name-here",
-	logs_collection_name="logs-collection-name-here",
-	state_with_params=False/True,
-	locales_folder="locales-folder-here",
-	db_address="db-ip-address-here",
-	db_port="db-port-here",
-	db_username="db-username-here",
-	db_password="db-password-here",
-	db_name="db-name-here")
-```
-Also you should create collections in mongo by youserlf, according to col. names you provide in constructor
-
-##### Local Storage (JSONs)
-To use local storage based on jsons  you have to provide the folder path to the class like so:
-```
-TelegramUtilsService(
-	roles = { roles dict here },
-	states = [ states list here ],
-	users_collection_name="users-collection-name-here",
-	logs_collection_name="logs-collection-name-here",
-	state_with_params=False/True,
-	locales_folder="locales-folder-here",
-	"storage_folder"="storage-folder-path-here")
-```
