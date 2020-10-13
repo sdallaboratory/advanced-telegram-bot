@@ -31,7 +31,7 @@ pip install advanced-telegram-bot
 ### Usage
 Just import the class and you're good to go
 ```
-from telegrambot import TelegramBot
+from advanced-telegram-bot import TelegramBot
 ```
 
 ### Documentation & help
