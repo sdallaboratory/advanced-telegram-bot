@@ -12,7 +12,7 @@ _Released 2020-10-13_
 - Utils wrapper class change for `TelegramBot` instead of `TelegramUtilsService`
 - Add routing class to handle income updates, `route` decorator
 - Add sending class to send outcoming messages
-- Add automatic logging on sending message and errors
+- Add automatic logging on sending messages
 
 **Minor changes:**
 - Changed storage visability in utils wrapper class to public
