@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.1
+
+_Released 2020-10-13_
+
+**Minor chages**
+- Build syntax bug fixed
+
 ## Version 0.1.0
 
 _Released 2020-10-13_
