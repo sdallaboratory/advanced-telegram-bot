@@ -34,3 +34,6 @@ Just import the class and you're good to go
 from telegrambot import TelegramBot
 ```
 
+### Documentation & help
+Help can be found in our [wiki pages](https://github.com/advanced-telegram-bot/wiki).
+
