@@ -79,7 +79,7 @@ class StateManager:
         return state[self.__status_column]
 
     def get_state_params(self, user_id: int) -> dict:
-                '''
+        '''
         Gives a state params of specified user
 
         Parameters
