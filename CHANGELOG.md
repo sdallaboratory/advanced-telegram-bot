@@ -1,17 +1,24 @@
 # Changelog
 
+## Version 0.1.5
+
+_Released 2020-10-14_
+
+**Minor Changes**
+- Fix package importing bug (v3 - one more subpackage)
+
 ## Version 0.1.4
 
 _Released 2020-10-14_
 
-**Minor Change**
+**Minor Changes**
 - Fix package importing bug (v2 - subpackages)
 
 ## Version 0.1.3
 
 _Released 2020-10-14_
 
-**Minor Change**
+**Minor Changes**
 - Fix package importing bug
 
 ## Version 0.1.2
