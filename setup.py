@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="advanced-telegram-bot", # Replace with your own username
-    version="0.1.3",
+    version="0.1.4",
     author="minish144 & usual-one",
     author_email="varlamow.col@yahoo.com",
     description="Python library containing utils for telegram bots",
