@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.4
+
+_Released 2020-10-14_
+
+**Minor Change**
+- Fix package importing bug (v2 - subpackages)
+
 ## Version 0.1.3
 
 _Released 2020-10-14_
