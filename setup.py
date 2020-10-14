@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="advanced-telegram-bot", # Replace with your own username
-    version="0.0.1",
+    version="0.1.2",
     author="minish144 & usual-one",
     author_email="varlamow.col@yahoo.com",
     description="Python library containing utils for telegram bots",
@@ -20,5 +20,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=['pymongo']
+    install_requires=['pymongo', 'python-telegram-bot', 'decorator']
 )
