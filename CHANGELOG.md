@@ -1,10 +1,17 @@
 # Changelog
 
+## Version 0.1.2
+
+_Released 2020-10-14_
+
+**Major Changes**
+- Update visability (now as `advancedbot`)
+
 ## Version 0.1.1
 
 _Released 2020-10-13_
 
-**Minor chages**
+**Minor Chages**
 - Build syntax bug fixed
 
 ## Version 0.1.0
@@ -21,7 +28,7 @@ _Released 2020-10-13_
 - Add sending class to send outcoming messages
 - Add automatic logging on sending messages
 
-**Minor changes:**
+**Minor Changes:**
 - Changed storage visability in utils wrapper class to public
 - Made Role Auth method `login_as` password parameter - optional
 - Add encoding parameter in File Manager util class
