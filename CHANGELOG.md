@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.3
+
+_Released 2020-10-14_
+
+**Minor Change**
+- Fix package importing bug
+
 ## Version 0.1.2
 
 _Released 2020-10-14_
@@ -11,8 +18,8 @@ _Released 2020-10-14_
 
 _Released 2020-10-13_
 
-**Minor Chages**
-- Build syntax bug fixed
+**Minor Changes**
+- Fix build syntax bug
 
 ## Version 0.1.0
 
