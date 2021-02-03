@@ -16,7 +16,7 @@ class ImageRoute(Route):
     def __init__(self,
                  callback: Callable,
                  states: List[str],
-                 roles: List[str]) -> None
+                 roles: List[str]) -> None:
         """
         Constructor.
 
