@@ -8,16 +8,17 @@ class DocumentLink:
         self.__tg_document: tg.Document = None
         self.__tg_file: tg.File = None
         self.file_name: str = None
+        self.mime_type: str = None
 
         if type(tg_document) == tg.Document:
             self.__tg_document = tg_document
             self.__tg_file = self.__tg_document.get_file()
             self.file_name = self.__tg_document.file_name
+            self.mime_type = self.__tg_document.mime_type
         else:
             self.__tg_file = tg_document
 
-        self.mime_type: self.__tg_file.mime_type
-        self.file_size: self.__tg_file.file_size
+        self.file_size: str = self.__tg_file.file_size
 
     def download(self, directory: str, file_name: str = None) -> str:
         if file_name is None:
