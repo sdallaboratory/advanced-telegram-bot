@@ -23,7 +23,7 @@ class DocumentLink:
         if file_name is None:
             file_name = self.file_name
 
-        if !directory.endswith('/'):
+        if not directory.endswith('/'):
             directory += '/'
 
         download_path: str = directory + file_name
