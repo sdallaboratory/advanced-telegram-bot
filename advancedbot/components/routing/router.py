@@ -67,7 +67,7 @@ class Router:
         self.__message_routes: List[MessageRoute] = []
         self.__command_routes: List[CommandRoute] = []
         self.__doсument_routes: List[DocumentRoute] = []
-        self.__image__routes: List[ImageRoute] = []
+        self.__image_routes: List[ImageRoute] = []
 
         self.__tg = tg_dispatcher
         self.__state_manager = state_manager
