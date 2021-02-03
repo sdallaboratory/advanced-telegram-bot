@@ -184,6 +184,64 @@ class TelegramBot:
         self.user_meta.user_update(user_id=kwargs['user_id'], username=kwargs['username'],
                                    first_name=kwargs['first_name'], last_name=kwargs['last_name'])
 
+    def document_route(self,
+                       file_names: List[str] = None,
+                       mime_types: List[str] = None,
+                       states: List[str] = None,
+                       roles: List[str] = None) -> Callable:
+        """
+        Decorator providing registering document message handlers considering roles and states.
+        registered handler is accessible only to users with one of given roles AND one of given states.
+
+        .........
+        Arguments
+        ---------
+        file_names: List[str], optional (default = None)
+            file names to access given handler. If None, every document that satisfies other criteria is able to trigger the handler.
+        mime_types: List[str], optional (default = None)
+            MIME-types to access given handler. If None, every document that satisfies other criteria is able to trigger the handler.
+        states: List[str], optional (default = None)
+            states that provide user's access to execute callback function. if None, callback function is available to everyone
+        roles: List[str], optional (default = None)
+            roles that provide user's access to execute callback function. if None, callback function is available to everyone
+        """
+        if states is None:
+            states = []
+        if roles is None:
+            roles = []
+        def decorator(func: Callable) -> Callable:
+            self.__router.register_document_route(
+                    DocumentRoute(file_names, mime_types, func, states, roles))
+            return func
+
+        return decorator
+
+    def image_route(self,
+                    states: List[str] = None,
+                    roles: List[str] = None) -> Callable:
+        """
+        Decorator providing registering image message handlers considering roles and states.
+        registered handler is accessible only to users with one of given roles AND one of given states.
+
+        .........
+        Arguments
+        ---------
+        states: List[str], optional (default = None)
+            states that provide user's access to execute callback function. if None, callback function is available to everyone
+        roles: List[str], optional (default = None)
+            roles that provide user's access to execute callback function. if None, callback function is available to everyone
+        """
+        if states is None:
+            states = []
+        if roles is None:
+            roles = []
+        def decorator(func: Callable) -> Callable:
+            self.__router.register_image_route(
+                    ImageRoute(func, states, roles))
+            return func
+
+        return decorator
+
     def route(self,
               commands: List[str] = None,
               messages: List[str] = None,
