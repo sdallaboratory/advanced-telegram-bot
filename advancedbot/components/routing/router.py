@@ -150,7 +150,7 @@ class Router:
         found_routes = []
 
         for route in self.__image_routes:
-            if !route.is_accessible_with(state, roles):
+            if not route.is_accessible_with(state, roles):
                 continue
             found_routes.append(route)
 
