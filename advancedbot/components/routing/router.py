@@ -347,7 +347,7 @@ class Router:
             user_state = 'free'
             user_roles = ['user']
 
-        images: List[DocumentLink] = [DocumentLink(image_id.get_file) for image_id in image_ids]
+        images: List[DocumentLink] = [DocumentLink(image_id.get_file()) for image_id in image_ids]
         found_routes = self.__find_image_routes(user_state, user_roles)
 
         for route in found_routes:
