@@ -126,7 +126,7 @@ class Router:
                 continue
             if route.mime_types and not mime_type in route.mime_types:
                 continue
-            if !route.is_accessible_with(state, roles):
+            if not route.is_accessible_with(state, roles):
                 continue
             found_routes.append(route)
 
