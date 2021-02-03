@@ -272,8 +272,8 @@ class Router:
         message = update.message
         chat = message.chat
 
-        message = message.text
         document = message.document
+        message = message.text
         user_id = chat.id
         username = chat.username
         first_name = chat.first_name
@@ -333,8 +333,8 @@ class Router:
         message = update.message
         chat = message.chat
 
-        message = message.text
         image_ids = message.photo
+        message = message.text
         user_id = chat.id
         username = chat.username
         first_name = chat.first_name
