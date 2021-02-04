@@ -180,13 +180,16 @@ class TelegramBot:
             raise InitException('Could not initialize storage class')
 
     def __init_user(self, **kwargs) -> None:
-        self.user_meta.user_initialize(kwargs['user_id'], init_dict={
+        user: User = kwargs['user']
+        self.user_meta.user_initialize(user.id, init_dict={
                 'Roles': ['user'],
                 'State': 'free',
                 'State_Params': []
             })
-        self.user_meta.user_update(user_id=kwargs['user_id'], username=kwargs['username'],
-                                   first_name=kwargs['first_name'], last_name=kwargs['last_name'])
+        self.user_meta.user_update(user_id=user.id,
+                                   username=user.username,
+                                   first_name=user.first_name,
+                                   last_name=user.last_name)
 
     def document_route(self,
                        file_names: List[str] = None,
