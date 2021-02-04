@@ -64,6 +64,11 @@ class DocumentLink:
         name: str, optional (default is None)
             name with which to save downloaded file
             if None, self name is given
+
+        Returns
+        ------
+        str
+            path where document has been downloaded
         """
         if name is None:
             name = self.name
