@@ -254,7 +254,7 @@ class Router:
         context: telegram.ext.CallbackContext, required
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
-        message = update.message
+        message: tg.Message = update.message
 
         text = message.text
 
@@ -266,7 +266,8 @@ class Router:
             user.state = 'free'
             user.roles = ['user']
 
-        document_link = DocumentLink(message.document)
+        document_link = DocumentLink(tg_document=message.document,
+                                     media_group_id=message.media_group_id)
 
         found_routes = self.__find_document_routes(document_link.name,
                                                    document_link.mime_type,
@@ -295,7 +296,7 @@ class Router:
         context: telegram.ext.CallbackContext, required
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
-        message = update.message
+        message: tg.Message = update.message
 
         text = message.text
 
@@ -308,7 +309,8 @@ class Router:
             user.roles = ['user']
 
         image_ids = message.photo
-        images: List[DocumentLink] = [DocumentLink(image_id.get_file()) for image_id in image_ids]
+        images = [DocumentLink(image_id.get_file(), message.media_group_id) \
+                  for image_id in image_ids]
 
         found_routes = self.__find_image_routes(user.state, user.roles)
         for route in found_routes:

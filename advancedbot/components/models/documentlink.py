@@ -11,6 +11,8 @@ class DocumentLink:
     ----------
     name: str, public
         name of document (with extensinon)
+    media_group_id: int, public
+        telegram id of group of files
     mime_type: str, public
         MIME-type of document
     size: int, public
@@ -21,7 +23,8 @@ class DocumentLink:
         `python-telegram-bot` class object providing download ability
     """
     def __init__(self,
-                 tg_document: Union[tg.Document, tg.File]) -> None:
+                 tg_document: Union[tg.Document, tg.File],
+                 media_group_id: int = None) -> None:
         """
         Constructor.
 
@@ -30,11 +33,14 @@ class DocumentLink:
         ---------
         tg_document: Union[telegram.Document, telegram.File], required
             `python-telegram-bot` class object providing document info
+        media_group_id: int, optional (default is None)
+            telegram id of group of files
         """
         self.__tg_document: tg.Document = None
         self.__tg_file: tg.File = None
         self.name: str = None
         self.mime_type: str = None
+        self.media_group_id: int = media_group_id
 
         if type(tg_document) == tg.Document:
             self.__tg_document = tg_document
