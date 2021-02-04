@@ -10,6 +10,8 @@ from .storage_managing.mongodbstorage import MongoDBStorage
 from .routing.router import Router
 from .routing.routes import *
 
+from .models import User, DocumentLink
+
 from .messaging.messagesender import MessageSender
 
 from .exceptions.telegramboterror import TelegramBotError
