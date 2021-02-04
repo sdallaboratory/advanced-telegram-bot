@@ -268,7 +268,7 @@ class Router:
 
         document_link = DocumentLink(message.document)
 
-        found_routes = self.__find_document_routes(document_link.file_name,
+        found_routes = self.__find_document_routes(document_link.name,
                                                    document_link.mime_type,
                                                    user.state, user.roles)
         for route in found_routes:
