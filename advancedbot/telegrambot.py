@@ -45,6 +45,10 @@ class TelegramBot:
     .......
     Methods
     -------
+    document_route(): public
+        decorator providing registering document handlers considering roles and states
+    image_route(): public
+        decorator providing registering image handlers considering roles and states
     route(): public
         decorator providing registering command/message handlers considering roles and states
     start(): public

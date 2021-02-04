@@ -4,7 +4,7 @@ from typing import List
 import telegram as tg
 import telegram.ext as tg_ext
 
-from ..models.documentlink import DocumentLink
+from ..models import DocumentLink, User
 from ..state_managing.statemanager import StateManager
 from ..state_managing.exceptions.stateerror import StateError
 from ..role_managing.roleauth import RoleAuth
@@ -20,10 +20,14 @@ class Router:
     ..........
     Attributes
     ----------
-    message_routes: List[MessageRoute], private
-        list of text message routes
     command_routes: List[CommandRoute], private
         list of commands routes (commands start with /)
+    document_routes: List[DocumentRoute], private
+        list of document routes
+    image_routes: List[MessageRoute], private
+        list of image (photo) routes
+    message_routes: List[MessageRoute], private
+        list of text message routes
     tg: telegram.ext.Dispatcher, private
         `python-telegram-bot` class, dispatching all kinds of updates
     state_manager: StateManager, private
@@ -36,14 +40,26 @@ class Router:
     -------
     register_command_route(): public
         registers given command handler
+    register_document_route(): public
+        registers given document handler
+    register_image_route(): public
+        registers given image handler
     register_message_route(): public
         registers given message handler
     find_command_routes(): private
         finds all command routes that are accessible with user state and roles and triggered with command
+    find_document_routes(): private
+        finds all documents routes that are accessible with user state and roles and triggered with document
+    find_image_routes(): private
+        finds all image routes that are accessible with user state and roles and triggered with image
     find_message_routes(): private
         finds all message routes that are accessible with user state and roles and triggered with message
     serve_command_route(): private
         handler for all registered commands, distributes callback functions to received commands
+    serve_document_route(): private
+        handler for all registered documents, distributes callback functions to received documents
+    serve_image_route(): private
+        handler for all registered images, distributes callback functions to received images
     serve_message_route(): private
         handler for all registered messages, distributes callback functions to received messages
     """
@@ -78,7 +94,8 @@ class Router:
                               state: str,
                               roles: List[str]) -> List[CommandRoute]:
         """
-        Finds all command routes that are accessible with user state and roles and triggered with command
+        Finds all command routes that are accessible with user state and roles
+        and triggered with command
 
         .........
         Arguments
@@ -187,21 +204,10 @@ class Router:
         Handler for all registered commands, distributes callback functions to received commands.
         command is considered to start with '/' and end with end of string or space.
         Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
+            user: User
+                user who has sent a command
             message: str
                 full received message text
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -212,54 +218,33 @@ class Router:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        chat = message.chat
 
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
+        text = message.text
+        command = text.split()[0].strip('/')
 
-        command = message.split()[0].strip('/')
+        user = User(message.chat)
         try: # try-except for user start initialization when he is not in db
-            user_state = self.__state_manager.get_state(user_id)
-            user_roles = self.__role_auth.get_user_roles(user_id)
+            user.state = self.__state_manager.get_state(user.id)
+            user.roles = self.__role_auth.get_user_roles(user.id)
         except (StateError, RoleError):
-            user_state = 'free'
-            user_roles = ['user']
+            user.state = 'free'
+            user.roles = ['user']
 
-        found_routes = self.__find_command_routes(command, user_state, user_roles)
-
+        found_routes = self.__find_command_routes(command, user.state, user.roles)
         for route in found_routes:
-            route.callback(user_id=user_id,
-                           message=message,
-                           username=username,
-                           first_name=first_name,
-                           last_name=last_name,
-                           roles=user_roles,
-                           state=user_state)
+            route.callback(user=user,
+                           message=text)
 
     def __serve_document_route(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
         """
         Handler for all registered documents, distributes callback functions to received documents.
         Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
+            user: User
+                user who has sent a document
             message: str
                 full received message text
             document: DocumentLink
                 link to received document
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -270,57 +255,37 @@ class Router:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        chat = message.chat
 
-        document = message.document
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
+        text = message.text
 
+        user = User(message.chat)
         try: # try-except for user start initialization when he is not in db
-            user_state = self.__state_manager.get_state(user_id)
-            user_roles = self.__role_auth.get_user_roles(user_id)
+            user.state = self.__state_manager.get_state(user.id)
+            user.roles = self.__role_auth.get_user_roles(user.id)
         except (StateError, RoleError):
-            user_state = 'free'
-            user_roles = ['user']
+            user.state = 'free'
+            user.roles = ['user']
 
-        document_link = DocumentLink(document)
+        document_link = DocumentLink(message.document)
+
         found_routes = self.__find_document_routes(document_link.file_name,
                                                    document_link.mime_type,
-                                                   user_state, user_roles)
+                                                   user.state, user.roles)
         for route in found_routes:
-            route.callback(user_id=user_id,
-                           message=message,
-                           document=document_link,
-                           username=username,
-                           first_name=first_name,
-                           last_name=last_name,
-                           roles=user_roles,
-                           state=user_state)
+            route.callback(user=user,
+                           message=text,
+                           document=document_link)
 
     def __serve_image_route(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
         """
         Handler for all registered images, distributes callback functions to received images.
         Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
+            user: User
+                user who has sent an image
             message: str
                 full received message text
             images: List[DocumentLink]
                 links to received images
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -331,54 +296,34 @@ class Router:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        chat = message.chat
+
+        text = message.text
+
+        user = User(message.chat)
+        try: # try-except for user start initialization when he is not in db
+            user.state = self.__state_manager.get_state(user.id)
+            user.roles = self.__role_auth.get_user_roles(user.id)
+        except (StateError, RoleError):
+            user.state = 'free'
+            user.roles = ['user']
 
         image_ids = message.photo
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
-
-        try: # try-except for user start initialization when he is not in db
-            user_state = self.__state_manager.get_state(user_id)
-            user_roles = self.__role_auth.get_user_roles(user_id)
-        except (StateError, RoleError):
-            user_state = 'free'
-            user_roles = ['user']
-
         images: List[DocumentLink] = [DocumentLink(image_id.get_file()) for image_id in image_ids]
-        found_routes = self.__find_image_routes(user_state, user_roles)
 
+        found_routes = self.__find_image_routes(user.state, user.roles)
         for route in found_routes:
-            route.callback(user_id=user_id,
-                           message=message,
-                           images=images,
-                           username=username,
-                           first_name=first_name,
-                           last_name=last_name,
-                           roles=user_roles,
-                           state=user_state)
+            route.callback(user=user,
+                           message=text,
+                           images=images)
 
     def __serve_message_route(self, update: tg.Update, context: tg_ext.CallbackContext) -> None:
         """
-        Handler for all registered messages, distributes callback functions to received messages.
+        Handler for all registered text messages, distributes callback functions to received messages.
         Calls callback function with **kwargs:
-            user_id: int
-                chat id that command is received from
+            user: User
+                user who has sent a message
             message: str
                 full received message text
-            username: str
-                telegram username of user with user_id
-            first_name: str
-                telegram first name of user with user_id
-            last_name: str
-                telegram last name of user with user_id
-            roles: List[str]
-                roles of user with user_id
-            state: Union[str, dict]
-                state of user presented by state_name if 'state_with_params' was True,
-                otherwise it is presented as dict with keys 'State' and 'State_Params' by default
 
         .........
         Arguments
@@ -389,31 +334,21 @@ class Router:
             `python-telegram-bot` class. context passed by telegram handler to callback
         """
         message = update.message
-        chat = message.chat
 
-        message = message.text
-        user_id = chat.id
-        username = chat.username
-        first_name = chat.first_name
-        last_name = chat.last_name
+        text = message.text
 
+        user = User(message.chat)
         try: # try-except for user start initialization when he is not in db
-            user_state = self.__state_manager.get_state(user_id)
-            user_roles = self.__role_auth.get_user_roles(user_id)
+            user.state = self.__state_manager.get_state(user.id)
+            user.roles = self.__role_auth.get_user_roles(user.id)
         except (StateError, RoleError):
-            user_state = 'free'
-            user_roles = ['user']
+            user.state = 'free'
+            user.roles = ['user']
 
-        found_routes = self.__find_message_routes(message, user_state, user_roles)
-
+        found_routes = self.__find_message_routes(text, user.state, user.roles)
         for route in found_routes:
-            route.callback(user_id=user_id,
-                           message=message,
-                           username=username,
-                           first_name=first_name,
-                           last_name=last_name,
-                           roles=user_roles,
-                           state=user_state)
+            route.callback(user=user,
+                           message=text)
 
     def register_command_route(self, route: CommandRoute) -> None:
         """
