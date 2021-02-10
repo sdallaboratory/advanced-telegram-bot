@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.1.5
+
+_Released 2021-02-10_
+
+**Minor Changes**
+- Cosmetic fixes in auth module
+
 ## Version 0.2.0
 
 _Released 2021-02-10_
