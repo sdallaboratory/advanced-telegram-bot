@@ -11,8 +11,12 @@ class RoleAuth:
     '''
     A class made for simplifiying users' roles management
     '''
-    def __init__(self, storage: Storage, roles: dict, users_collection: str = "Users",
-                id_column: str = "_id", roles_column: str = "Roles"):
+    def __init__(self,
+                storage: Storage,
+                roles: dict,
+                users_collection: str = "Users",
+                id_column: str = "_id",
+                roles_column: str = "Roles"):
         '''
         Parameters
         ----------
