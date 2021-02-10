@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.1.5
+## Version 0.2.1
 
 _Released 2021-02-10_
 
