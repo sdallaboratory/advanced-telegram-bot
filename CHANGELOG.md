@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.2.0
+
+_Released 2021-02-10_
+
+**Major Changes:**
+- Add 'Document' and 'Image' route types
+
+**New Features:**
+- Add `document_route` and `image_route` decorators
+- Add `DocumentLink` and `User` classes to be returned from routes
+
+**Minor Changes:**
+- Update `route` decorators: passing `User` instance to callback function
+
 ## Version 0.1.5
 
 _Released 2020-10-14_

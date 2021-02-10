@@ -8,8 +8,9 @@ from .storage_managing.localjsonstorage import LocalJSONStorage
 from .storage_managing.mongodbstorage import MongoDBStorage
 
 from .routing.router import Router
-from .routing.commandroute import CommandRoute
-from .routing.messageroute import MessageRoute
+from .routing.routes import *
+
+from .models import User, DocumentLink
 
 from .messaging.messagesender import MessageSender
 

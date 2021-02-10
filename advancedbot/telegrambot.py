@@ -45,6 +45,10 @@ class TelegramBot:
     .......
     Methods
     -------
+    document_route(): public
+        decorator providing registering document handlers considering roles and states
+    image_route(): public
+        decorator providing registering image handlers considering roles and states
     route(): public
         decorator providing registering command/message handlers considering roles and states
     start(): public
@@ -176,13 +180,74 @@ class TelegramBot:
             raise InitException('Could not initialize storage class')
 
     def __init_user(self, **kwargs) -> None:
-        self.user_meta.user_initialize(kwargs['user_id'], init_dict={
+        user: User = kwargs['user']
+        self.user_meta.user_initialize(user.id, init_dict={
                 'Roles': ['user'],
                 'State': 'free',
                 'State_Params': []
             })
-        self.user_meta.user_update(user_id=kwargs['user_id'], username=kwargs['username'],
-                                   first_name=kwargs['first_name'], last_name=kwargs['last_name'])
+        self.user_meta.user_update(user_id=user.id,
+                                   username=user.username,
+                                   first_name=user.first_name,
+                                   last_name=user.last_name)
+
+    def document_route(self,
+                       file_names: List[str] = None,
+                       mime_types: List[str] = None,
+                       states: List[str] = None,
+                       roles: List[str] = None) -> Callable:
+        """
+        Decorator providing registering document message handlers considering roles and states.
+        registered handler is accessible only to users with one of given roles AND one of given states.
+
+        .........
+        Arguments
+        ---------
+        file_names: List[str], optional (default = None)
+            file names to access given handler. If None, every document that satisfies other criteria is able to trigger the handler.
+        mime_types: List[str], optional (default = None)
+            MIME-types to access given handler. If None, every document that satisfies other criteria is able to trigger the handler.
+        states: List[str], optional (default = None)
+            states that provide user's access to execute callback function. if None, callback function is available to everyone
+        roles: List[str], optional (default = None)
+            roles that provide user's access to execute callback function. if None, callback function is available to everyone
+        """
+        if states is None:
+            states = []
+        if roles is None:
+            roles = []
+        def decorator(func: Callable) -> Callable:
+            self.__router.register_document_route(
+                    DocumentRoute(file_names, mime_types, func, states, roles))
+            return func
+
+        return decorator
+
+    def image_route(self,
+                    states: List[str] = None,
+                    roles: List[str] = None) -> Callable:
+        """
+        Decorator providing registering image message handlers considering roles and states.
+        registered handler is accessible only to users with one of given roles AND one of given states.
+
+        .........
+        Arguments
+        ---------
+        states: List[str], optional (default = None)
+            states that provide user's access to execute callback function. if None, callback function is available to everyone
+        roles: List[str], optional (default = None)
+            roles that provide user's access to execute callback function. if None, callback function is available to everyone
+        """
+        if states is None:
+            states = []
+        if roles is None:
+            roles = []
+        def decorator(func: Callable) -> Callable:
+            self.__router.register_image_route(
+                    ImageRoute(func, states, roles))
+            return func
+
+        return decorator
 
     def route(self,
               commands: List[str] = None,
